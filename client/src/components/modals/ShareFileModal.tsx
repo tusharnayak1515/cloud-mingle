@@ -3,6 +3,7 @@
 import React from "react";
 import dynamic from "next/dynamic";
 import ReactDom from "react-dom";
+import { AiOutlineClose } from "react-icons/ai";
 const Modal = dynamic(() => import("./Modal"), { ssr: false });
 
 const ShareFileModal = ({ show, setShow }: any) => {
@@ -18,7 +19,7 @@ const ShareFileModal = ({ show, setShow }: any) => {
     <Modal>
       <div id="preview" className={`h-[400px] w-[40%] mx-auto`}>
         <div
-          className={`h-full w-full my-[20%] 
+          className={`relative h-full w-full my-[20%] 
           text-dark-primary p-4 flex flex-col justify-start items-center gap-4 
           rounded-md bg-dark-secondary`}
         >
@@ -29,6 +30,10 @@ const ShareFileModal = ({ show, setShow }: any) => {
             <div className={`h-[100px] w-[100px]`}>{previewFile()}</div>
             <p>{show?.name}</p>
           </form>
+          <AiOutlineClose
+            onClick={() => setShow(null)}
+            className={`absolute left-[101%] top-[2%] text-3xl text-dark-primary cursor-pointer`}
+          />
         </div>
       </div>
     </Modal>,
