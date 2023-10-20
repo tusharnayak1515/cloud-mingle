@@ -6,7 +6,7 @@ import Token from "../../models/Token";
 import User from "../../models/User";
 
 const signup = async (req: Request, res: Response) => {
-    let success = false;
+    let success:boolean = false;
     try {
         const { name, email, password, otp } = req.body;
 

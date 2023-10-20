@@ -10,6 +10,7 @@ import cookieParser from "cookie-parser";
 import connectToMongo from "./db";
 import otpRoutes from "./routes/otp";
 import authRoutes from "./routes/auth";
+import collectionRoutes from "./routes/collection";
 
 const app = express();
 const port = process.env.PORT || 9000;
@@ -33,6 +34,7 @@ import "./models/Collection";
 
 app.use("/api/otp", otpRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/collections", collectionRoutes);
 
 app.listen(port, () => {
     console.log(`Server started successfully at port ${port}.`);

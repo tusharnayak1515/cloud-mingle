@@ -17,3 +17,12 @@ html {
 body {
   background-color: white;
 }
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  display: none;
+}
+
+::-webkit-scrollbar {
+  display: none;
+}

@@ -3,7 +3,7 @@ import Token from "../../models/Token";
 import sendEmail from "../../services/email";
 
 const sendOtp = async (req:Request, res:Response) => {
-  let success = false;
+  let success:boolean = false;
   try {
     const { email } = req.body;
     const otp = Math.floor(1000 + Math.random() * 9000);

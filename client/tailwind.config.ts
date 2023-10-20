@@ -37,8 +37,8 @@ const config: Config = {
         bannerShadow: "0.1rem 0.1rem lightgray"
       },
       boxShadow: {
-        "dark-menuShadow": "0px 0px 5px 0px #2cb2b9",
-        btnShadow: "0px 1px 3px 0px #5b65d1",
+        "dark-menuShadow": "0px 0px 7px 0px #2cb2b9",
+        "dark-formShadow": "0px 0px 5x 0px red",
       },
       backgroundColor: {
         "dark-primary": "#00191a",

@@ -1,9 +1,12 @@
 import { Inter } from "next/font/google";
 import { Metadata } from "next";
+import { ToastContainer } from "react-toastify";
 
 const inter = Inter({ subsets: ["latin"] });
-import "./globals.css";
 import RootLayout from "@/layouts/RootLayout";
+
+import "./globals.css";
+import "react-toastify/dist/ReactToastify.css";
 
 export const metadata: Metadata = {
   title: "CloudMingle",
@@ -20,6 +23,7 @@ export default function MainLayout({
       <body className={inter.className}>
         <RootLayout>{children}</RootLayout>
         <div id="modal"></div>
+        <ToastContainer />
       </body>
     </html>
   );

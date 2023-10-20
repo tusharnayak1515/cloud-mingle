@@ -8,7 +8,7 @@ import { IUser } from "../../entities/entityInterfaces";
 const secret = process.env.JWT_SECRET;
 
 const signin = async (req: Request, res: Response) => {
-  let success = false;
+  let success:boolean = false;
   try {
     const { email, password } = req.body;
     const errors = validationResult(req);

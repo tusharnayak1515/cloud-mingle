@@ -13,17 +13,26 @@ import { AiFillFileText, AiFillFileZip } from "react-icons/ai";
 import { BsCameraVideoFill, BsThreeDotsVertical } from "react-icons/bs";
 import { BiSolidImage } from "react-icons/bi";
 import OptionsMenu from "@/components/OptionsMenu";
+import { useDispatch, useSelector, shallowEqual } from "react-redux";
+import { useRouter } from "next/navigation";
 const OpenFile = dynamic(() => import("@/components/modals/OpenFile"), {
   ssr: false,
 });
 const RenameFile = dynamic(() => import("@/components/modals/RenameFile"), {
   ssr: false,
 });
-const ShareFileModal = dynamic(() => import("@/components/modals/ShareFileModal"), {
-  ssr: false,
-});
+const ShareFileModal = dynamic(
+  () => import("@/components/modals/ShareFileModal"),
+  {
+    ssr: false,
+  }
+);
 
 const Home = () => {
+  const router = useRouter();
+  const dispatch: any = useDispatch();
+  const { user } = useSelector((state: any) => state.userReducer, shallowEqual);
+
   const [files, setFiles] = useState<File[] | any[]>([]);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [showMenu, setShowMenu] = useState<number | null>(null);
@@ -197,9 +206,13 @@ const Home = () => {
     setFiles((prev: File[]) => prev.filter((_, id: number) => index !== id));
   };
 
-  const onRenameFile = (fileToRename: File, name: string, extension: string) => {
+  const onRenameFile = (
+    fileToRename: File,
+    name: string,
+    extension: string
+  ) => {
     setFiles((prevFiles) => {
-      return prevFiles.map((file:File) => {
+      return prevFiles.map((file: File) => {
         if (file === fileToRename) {
           return {
             name: `${name}${extension}`,
@@ -217,6 +230,9 @@ const Home = () => {
   };
 
   useEffect(() => {
+    if (!user) {
+      router.replace("/signin");
+    }
     const handleDocumentClick = (e: any) => {
       const menuElement = document.getElementById("menu");
       const previewElement = document.getElementById("preview");
@@ -243,7 +259,7 @@ const Home = () => {
     return () => {
       document.removeEventListener("click", handleDocumentClick);
     };
-  }, [showMenu]);
+  }, [user, showMenu]);
 
   return (
     <div
@@ -257,9 +273,7 @@ const Home = () => {
         <RenameFile show={rename} setShow={setRename} onRename={onRenameFile} />
       )}
 
-      {shareFile && (
-        <ShareFileModal show={shareFile} setShow={setShareFile} />
-      )}
+      {shareFile && <ShareFileModal show={shareFile} setShow={setShareFile} />}
 
       <div
         onDrop={handleFileDrop}
