@@ -45,10 +45,12 @@ const addFiles = async (req: Request, res: Response) => {
                 const bufferData: Buffer = Buffer.from(file._writeStream.path);
 
                 const newFile = {
-                    name: file.name,
+                    filename: file.originalFilename,
                     data: bufferData,
-                    contentType: file.type,
+                    contentType: file.mimetype,
                 };
+
+                console.log("data: ",newFile);
 
                 collection = await Collection.findByIdAndUpdate(collectionId, { $push: { files: newFile } }, { new: true });
 
