@@ -15,6 +15,7 @@ import { BiSolidImage } from "react-icons/bi";
 import OptionsMenu from "@/components/OptionsMenu";
 import { useDispatch, useSelector, shallowEqual } from "react-redux";
 import { useRouter } from "next/navigation";
+import { formatDate, formatFileSize } from "@/utils/util";
 const OpenFile = dynamic(() => import("@/components/modals/OpenFile"), {
   ssr: false,
 });
@@ -72,31 +73,6 @@ const Home = () => {
         className={`h-full w-full`}
       />
     );
-  };
-
-  const formatFileSize = (sizeInBytes: number) => {
-    if (sizeInBytes < 1024) {
-      return sizeInBytes + " bytes";
-    } else if (sizeInBytes < 1024 * 1024) {
-      return (sizeInBytes / 1024).toFixed(2) + " KB";
-    } else if (sizeInBytes < 1024 * 1024 * 1024) {
-      return (sizeInBytes / (1024 * 1024)).toFixed(2) + " MB";
-    } else {
-      return (sizeInBytes / (1024 * 1024 * 1024)).toFixed(2) + " GB";
-    }
-  };
-
-  const formatDate = (timestamp: number) => {
-    const date = new Date(timestamp);
-    const options: any = {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-    };
-    return date.toLocaleDateString("en-US", options);
   };
 
   const previewFile = (file: File, icon?: boolean) => {

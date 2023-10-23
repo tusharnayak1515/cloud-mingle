@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { Files, Fields, IncomingForm } from "formidable";
+import fs from "fs";
 import Collection from "../../models/Collection";
 import { ICollection } from "../../entities/entityInterfaces";
 
@@ -34,26 +35,25 @@ const addFiles = async (req: Request, res: Response) => {
             for (const key of Object.keys(files)) {
                 const val: any = files[key];
                 const file: any = val[0];
-                console.log("file: ",file);
-                console.log("check 1: ",file._writeStream);
-                console.log("check 2: ",file._writeStream.data);
+                console.log("file: ", file);
+                console.log("check 1: ", file._writeStream);
+                console.log("check 2: ", file._writeStream.data);
 
                 if (!file._writeStream || !file._writeStream.path) {
                     return res.status(400).json({ success, error: "File data is missing or invalid." });
                 }
 
-                const bufferData: Buffer = Buffer.from(file._writeStream.path);
+                const fileData = fs.readFileSync(file?._writeStream?.path);
 
                 const newFile = {
                     filename: file.originalFilename,
-                    data: bufferData,
+                    data: fileData,
                     contentType: file.mimetype,
                 };
 
-                console.log("data: ",newFile);
+                console.log("new File: ", newFile);
 
                 collection = await Collection.findByIdAndUpdate(collectionId, { $push: { files: newFile } }, { new: true });
-
             }
 
             success = true;

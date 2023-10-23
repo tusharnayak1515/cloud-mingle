@@ -5,7 +5,11 @@ const userSlice = createSlice({
     name: "user",
     initialState: {
         user: getCookie("authorization") || null,
-        profile: null,
+        profile: typeof localStorage === "undefined" 
+        ? null 
+        : localStorage.getItem("user_data") 
+        ? JSON.parse(localStorage.getItem("user_data")!) 
+        : null,
     },
     reducers: {
         setUser: (state, action) => {
@@ -14,7 +18,7 @@ const userSlice = createSlice({
         setProfile: (state, action) => {
             state.profile = action.payload.user;
         },
-        userLogout: (state, action) => {
+        userLogout: (state) => {
             state.user = null;
             state.profile = null;
         },

@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import React from "react";
 
 const Collection = ({ collection }: any) => {
@@ -13,42 +12,29 @@ const Collection = ({ collection }: any) => {
         {collection?.name}
       </p>
 
-      {collection.files.map((file: any) => {
-        const uint8Array = new Uint8Array(file?.data.data);
-        const array = Array.from(uint8Array);
-        const base64String = btoa(String.fromCharCode(...array));
+      {/* {collection.files.map((file: any) => {
+        console.log("File:", file);
+        console.log("File Data:", file?.data?.data);
 
-        console.log("file: ", file);
-        console.log("base64String: ", base64String);
-
-        const blob = new Blob([uint8Array], { type: file?.contentType });
-
-        console.log("blob: ",blob);
-        
+        const buffer: Buffer = Buffer.from(file?.data?.data, "base64url");
+        const blob = new Blob([buffer], { type: file.contentType });
         const blobUrl = URL.createObjectURL(blob);
 
-        console.log("blobUrl: ",blobUrl);
+        console.log("buffer:", buffer);
+        console.log("Blob:", blob);
+        console.log("Blob URL:", blobUrl);
+
+        const myfile = new File([
+          new Blob(["decoded_base64_String"])
+        ], "output_file_name");
 
         return (
           <div key={file?._id} className={`w-full py-2`}>
-            {/* <img
-              src={`data:${file?.contentType};base64,${file?.data.data}`}
-              alt={file?.name}
-            /> */}
-            {/* <Image
-            //   src={`data:${file?.contentType};base64,${base64String}`}
-              src={blobUrl}
-              alt="File"
-              height={100}
-              width={100}
-            //   className={`h-[100px] w-[100px]`}
-            /> */}
-            {/* <input type="file" value={base64String} /> */}
-            <img src={blobUrl} alt="Collection Image" />
             <p>{file?.filename}</p>
+            <img src={blobUrl} alt={file?.filename} />
           </div>
         );
-      })}
+      })} */}
     </div>
   );
 };

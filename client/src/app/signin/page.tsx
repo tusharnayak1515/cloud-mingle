@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import { userSignin } from "@/apiCalls/auth";
 import { setCookie } from "cookies-next";
 import { setProfile, setUser } from "@/redux/reducers/userReducer";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 const emailRegex = /^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[A-Za-z]+$/;
 
@@ -21,6 +22,7 @@ const Signin = () => {
     password: "",
   };
   const [userDetails, setUserDetails] = useState(initState);
+  const [isLoading, setIsLoading] = useState(false);
 
   const onChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
@@ -30,6 +32,7 @@ const Signin = () => {
 
   const onSignin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setIsLoading(true);
     try {
       const { email, password } = userDetails;
       if (
@@ -38,11 +41,14 @@ const Signin = () => {
       ) {
         const res: any = await userSignin({ email, password });
         if (res.success) {
-          setCookie("authorization", res.token);
+          setCookie("authorization", res.token, {maxAge: 60*60*24});
+          localStorage.setItem("user_data", JSON.stringify(res.user));
           dispatch(setUser({ token: res.token }));
           dispatch(setProfile({ user: res.user }));
+          setIsLoading(false);
         }
       } else if (!emailRegex.test(email)) {
+        setIsLoading(false);
         toast.error("Invalid email", {
           position: "top-right",
           autoClose: 3000,
@@ -53,6 +59,7 @@ const Signin = () => {
           progress: undefined,
         });
       } else {
+        setIsLoading(false);
         toast.error("Password cannot be empty", {
           position: "top-right",
           autoClose: 3000,
@@ -64,6 +71,7 @@ const Signin = () => {
         });
       }
     } catch (error: any) {
+      setIsLoading(false);
       toast.error(error.response.data.error, {
         position: "top-right",
         autoClose: 3000,
@@ -86,6 +94,7 @@ const Signin = () => {
     <div
       className={`min-h-[100vh] w-full flex flex-col justify-start items-center bg-dark-primary`}
     >
+      {isLoading && <LoadingSpinner />}
       <form
         onSubmit={onSignin}
         className={`h-auto w-[400px] my-[7rem] p-4 text-dark-primary

@@ -7,8 +7,11 @@ import { setCollections } from "@/redux/reducers/collectionReducer";
 import { useRouter } from "next/navigation";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import dynamic from "next/dynamic";
-const Collection = dynamic(
-  () => import("@/components/collections/Collection"),
+import { BsThreeDotsVertical } from "react-icons/bs";
+import { formatDate } from "@/utils/util";
+import FolderOptions from "@/components/FolderOptions";
+const AddCollectionModal = dynamic(
+  () => import("@/components/modals/AddCollectionModal"),
   { ssr: false }
 );
 
@@ -22,6 +25,9 @@ const CollectionsPage = () => {
   );
 
   const [isLoading, setIsLoading] = useState(false);
+  const [showFolderMenu, setShowFolderMenu] = useState(false);
+  const [isCreateCollection, setIsCreateCollection] = useState(false);
+  const [showCollectionMenu, setShowCollectionMenu] = useState(false);
 
   const fetchMyCollections = async () => {
     setIsLoading(true);
@@ -46,21 +52,121 @@ const CollectionsPage = () => {
     fetchMyCollections();
   }, [user, router]);
 
+  useEffect(() => {
+    const handleDocumentClick = (e: any) => {
+      const menuElement = document.getElementById("menu");
+      // const previewElement = document.getElementById("preview");
+      const menuBtn = document.querySelector(".menuBtn");
+
+      if (showFolderMenu && menuElement && !menuElement.contains(e.target)) {
+        setShowFolderMenu(false);
+      }
+
+      if (showFolderMenu && menuBtn?.contains(e.target)) {
+        setShowFolderMenu(false);
+      }
+
+      // if (showMenu !== null && menuElement && !menuElement.contains(e.target)) {
+      //   setShowFolderMenu(false);
+      // }
+    };
+    document.addEventListener("click", handleDocumentClick);
+
+    return () => {
+      document.removeEventListener("click", handleDocumentClick);
+    };
+  }, [showFolderMenu]);
+
   return (
     <div
-      className={`min-h-[100vh] w-full p-8 text-dark-primary flex flex-col justify-start items-center gap-4`}
+      className={`min-h-[100vh] w-full p-8 text-dark-primary flex flex-col justify-start items-start gap-4`}
     >
       {isLoading && <LoadingSpinner />}
 
-      <h1>My Collections</h1>
+      {isCreateCollection && (
+        <AddCollectionModal setShow={setIsCreateCollection} />
+      )}
+
+      <h1 className={`text-2xl font-bold`}>My Collections</h1>
 
       {collections?.length === 0 ? (
         <p>No collections to show</p>
       ) : (
-        <div className={`w-full`}>
-          {collections?.map((collection: any) => {
+        <div className={`w-full my-4 `}>
+          <table className={`w-full bg-transparent`}>
+            <thead>
+              <tr>
+                <th className={`py-3 px-2 text-start`}>Name</th>
+                <th className={`py-3 px-2 text-start`}>Last Modified</th>
+                <th className={`py-3 px-2 text-start`}>Files</th>
+                <th className={`relative py-3 px-2 text-sm text-start`}>
+                  <div
+                    onClick={() => setShowFolderMenu(true)}
+                    className={`inline-block w-auto p-2 rounded-full cursor-pointer hover:bg-dark-primary transition-all duration-300`}
+                  >
+                    <BsThreeDotsVertical className={`text-base`} />
+                  </div>
+                  {showFolderMenu && <FolderOptions setIsCreateCollection={setIsCreateCollection} />}
+                </th>
+              </tr>
+            </thead>
+
+            <tbody className={`w-full`}>
+              {collections?.map((collection: any) => {
+                return (
+                  <tr
+                    key={collection?._id}
+                    className={`border-t border-dark-primary transition-all duration-300`}
+                  >
+                    <td
+                      className={`w-auto py-3 px-2 text-sm text-start font-[500]`}
+                    >
+                      {/* <div className={`flex justify-start items-center gap-4`}>
+                        {previewFile(file, true)}
+                      </div> */}
+                      {/* <p> */}
+                      {collection.name?.length > 25
+                        ? `${collection.name.substring(0, 25)}...`
+                        : collection.name}
+                      {/* </p> */}
+                    </td>
+                    <td
+                      className={`w-auto py-3 px-2 text-sm text-start font-[500]`}
+                    >
+                      {formatDate(collection.updatedAt)}
+                    </td>
+                    <td className={`py-3 px-2 text-sm text-start font-[500]`}>
+                      {collection?.files?.length}
+                    </td>
+                    <td className={`relative py-3 px-2 text-sm text-start`}>
+                      <div
+                        // onClick={() => {
+                        //   onMenuClick(index);
+                        // }}
+                        className={`menuBtn inline-block w-auto p-2 rounded-full cursor-pointer hover:bg-dark-primary transition-all duration-300`}
+                      >
+                        <BsThreeDotsVertical className={`text-base`} />
+                      </div>
+                      {/* {showCollectionMenu && (
+                          <OptionsMenu
+                            onDeleteFile={onDeleteFile}
+                            files={files}
+                            index={showMenu}
+                            setShowMenu={setShowMenu}
+                            setShow={setShow}
+                            setRename={setRename}
+                            setShareFile={setShareFile}
+                          />
+                        )} */}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+          {/* {collections?.map((collection: any) => {
             return <Collection key={collection?._id} collection={collection} />;
-          })}
+          })} */}
         </div>
       )}
     </div>

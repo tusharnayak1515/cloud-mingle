@@ -13,7 +13,7 @@ const collectionSlice = createSlice({
     setCollections: (state, action)=> {
         state.collections = action.payload.collections
     },
-    collectionLogout: (state, action)=> {
+    collectionLogout: (state)=> {
         state.collection = null,
         state.collections = []
     }

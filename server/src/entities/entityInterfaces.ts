@@ -33,10 +33,11 @@ export interface ICollection {
     updatedAt?: number;
 }
 
+
 export interface IInvite {
     [x: string]: any;
-    targetCollection: Types.ObjectId | string;
-    user: Types.ObjectId | string;
+    targetCollection: Types.ObjectId;
+    user: Types.ObjectId;
     createdAt?: number;
     updatedAt?: number;
 }
