@@ -5,34 +5,43 @@ import dynamic from "next/dynamic";
 import ReactDom from "react-dom";
 import { AiOutlineClose } from "react-icons/ai";
 import ReactPlayer from "react-player";
-const Modal = dynamic(()=> import("./Modal"),{ssr: false});
+const Modal = dynamic(() => import("./Modal"), { ssr: false });
 
 type propType = {
-  show: File | null;
+  show: any;
   setShow: Function;
 };
 
 const OpenFile = ({ show, setShow }: propType) => {
-  const ImagePreview = ({ file }: any) => {
-    return <img src={URL.createObjectURL(file)} className={`h-full w-full`} />;
+  console.log("file: ", show);
+
+  const ImagePreview = () => {
+    const buffer: Buffer = Buffer.from(show?.data?.data, "base64url");
+    const blob = new Blob([buffer], { type: show.contentType });
+    const blobUrl = URL.createObjectURL(blob);
+    return <img src={blobUrl} className={`h-full w-full`} />;
   };
 
   const DocumentPreview = ({ file }: any) => {
-    const fileType = file.type;
+    const fileType = file?.contentType;
 
     if (fileType === "application/pdf") {
-      return (
-        <iframe src={URL.createObjectURL(file)} className={`h-full w-full`} />
-      );
+      const buffer: Buffer = Buffer.from(show?.data?.data, "base64url");
+      const blob = new Blob([buffer], { type: show.contentType });
+      const blobUrl = URL.createObjectURL(blob);
+      return <iframe src={blobUrl} className={`h-full w-full`} />;
     } else {
       return <p>Preview not available for this file type</p>;
     }
   };
 
-  const VideoPreview = ({ file }: any) => {
+  const VideoPreview = () => {
+    const buffer: Buffer = Buffer.from(show?.data?.data, "base64url");
+    const blob = new Blob([buffer], { type: show.contentType });
+    const blobUrl = URL.createObjectURL(blob);
     return (
       <ReactPlayer
-        url={URL.createObjectURL(file)}
+        url={blobUrl}
         controls={true}
         width="100%"
         height="100%"
@@ -42,11 +51,11 @@ const OpenFile = ({ show, setShow }: propType) => {
   };
 
   const renderPreview = () => {
-    const file: File = show!;
-    const fileType = file?.type;
+    const file: any = show!;
+    const fileType = file?.contentType;
     try {
       if (fileType?.startsWith("image/")) {
-        return <ImagePreview file={file} />;
+        return <ImagePreview />;
       } else if (fileType === "application/pdf") {
         return <DocumentPreview file={file} />;
       } else if (
@@ -54,7 +63,7 @@ const OpenFile = ({ show, setShow }: propType) => {
       ) {
         return <DocumentPreview file={file} />;
       } else if (fileType?.startsWith("video/")) {
-        return <VideoPreview file={file} />;
+        return <VideoPreview />;
       } else {
         return <p>Preview not available for this file type</p>;
       }
@@ -64,9 +73,10 @@ const OpenFile = ({ show, setShow }: propType) => {
   };
 
   return ReactDom.createPortal(
-    <Modal className={`fixed ${
-      show ? "left-0 right-0 top-0 bottom-0" : "left-[-10000px]"
-    } z-[500] bg-[#0000005a] transition-all duration-300`}
+    <Modal
+      className={`fixed ${
+        show ? "left-0 right-0 top-0 bottom-0" : "left-[-10000px]"
+      } z-[500] bg-[#0000005a] transition-all duration-300`}
     >
       <div
         id="preview"

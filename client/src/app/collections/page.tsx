@@ -84,7 +84,7 @@ const CollectionsPage = () => {
 
   return (
     <div
-      className={`min-h-[100vh] w-full p-8 text-dark-primary flex flex-col justify-start items-start gap-4`}
+      className={`min-h-[90vh] w-full p-8 text-dark-primary flex flex-col justify-start items-start gap-4`}
     >
       {isLoading && <LoadingSpinner />}
 

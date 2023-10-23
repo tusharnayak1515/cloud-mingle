@@ -20,3 +20,8 @@ export const addCollection = async ({name}:addCollectionPropType) => {
     const { data } = await api.post(`${url}/api/collections/`, {name});
     return data;
 }
+
+export const addFile = async ({formData, id}:any) => {
+    const { data } = await api.post(`${url}/api/collections/add-files/${id}`, formData);
+    return data;
+}

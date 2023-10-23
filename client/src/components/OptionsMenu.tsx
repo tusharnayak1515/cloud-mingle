@@ -7,20 +7,16 @@ import { FiDownload } from "react-icons/fi";
 import { BsShareFill } from "react-icons/bs";
 
 const OptionsMenu = ({
-  files,
-  index,
+  file,
   onDeleteFile,
   setShowMenu,
   setShow,
   setRename,
   setShareFile,
 }: any) => {
-  const file: File | null = files.find(
-    (item: File, id: number) => index === id
-  );
 
   const onDeleteClick = () => {
-    onDeleteFile(index);
+    onDeleteFile(file?._id);
     setShowMenu(null);
   };
 
@@ -48,8 +44,8 @@ const OptionsMenu = ({
   h-auto w-[300px] py-3 flex flex-col justify-start items-start 
   rounded-md bg-dark-primary shadow-dark-menuShadow z-[200]`}
     >
-      {(file?.type.startsWith("image/") ||
-        file?.type === "application/pdf") && (
+      {(file?.contentType.startsWith("image/") ||
+        file?.contentType === "application/pdf") && (
         <div
           onClick={() => setShow(file)}
           className={`w-full p-2 flex justify-start items-center gap-4  hover:bg-dark-secondary cursor-pointer`}
