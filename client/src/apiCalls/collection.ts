@@ -7,6 +7,11 @@ export const getAllCollections = async () => {
     return data;
 }
 
+export const getCollectionById = async (id:string) => {
+    const { data } = await api.get(`${url}/api/collections/${id}`);
+    return data;
+}
+
 type addCollectionPropType = {
     name: String;
 }

@@ -10,6 +10,7 @@ import dynamic from "next/dynamic";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { formatDate } from "@/utils/util";
 import FolderOptions from "@/components/FolderOptions";
+import CollectionsMenu from "@/components/CollectionsMenu";
 const AddCollectionModal = dynamic(
   () => import("@/components/modals/AddCollectionModal"),
   { ssr: false }
@@ -27,7 +28,7 @@ const CollectionsPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showFolderMenu, setShowFolderMenu] = useState(false);
   const [isCreateCollection, setIsCreateCollection] = useState(false);
-  const [showCollectionMenu, setShowCollectionMenu] = useState(false);
+  const [showCollectionMenu, setShowCollectionMenu] = useState(null);
 
   const fetchMyCollections = async () => {
     setIsLoading(true);
@@ -55,7 +56,7 @@ const CollectionsPage = () => {
   useEffect(() => {
     const handleDocumentClick = (e: any) => {
       const menuElement = document.getElementById("menu");
-      // const previewElement = document.getElementById("preview");
+      const collectionMenu = document.getElementById("collectionMenu");
       const menuBtn = document.querySelector(".menuBtn");
 
       if (showFolderMenu && menuElement && !menuElement.contains(e.target)) {
@@ -66,16 +67,20 @@ const CollectionsPage = () => {
         setShowFolderMenu(false);
       }
 
-      // if (showMenu !== null && menuElement && !menuElement.contains(e.target)) {
-      //   setShowFolderMenu(false);
-      // }
+      if (
+        showCollectionMenu !== null &&
+        collectionMenu &&
+        !collectionMenu?.contains(e.target)
+      ) {
+        setShowCollectionMenu(null);
+      }
     };
     document.addEventListener("click", handleDocumentClick);
 
     return () => {
       document.removeEventListener("click", handleDocumentClick);
     };
-  }, [showFolderMenu]);
+  }, [showFolderMenu, showCollectionMenu]);
 
   return (
     <div
@@ -106,7 +111,11 @@ const CollectionsPage = () => {
                   >
                     <BsThreeDotsVertical className={`text-base`} />
                   </div>
-                  {showFolderMenu && <FolderOptions setIsCreateCollection={setIsCreateCollection} />}
+                  {showFolderMenu && (
+                    <FolderOptions
+                      setIsCreateCollection={setIsCreateCollection}
+                    />
+                  )}
                 </th>
               </tr>
             </thead>
@@ -121,43 +130,34 @@ const CollectionsPage = () => {
                     <td
                       className={`w-auto py-3 px-2 text-sm text-start font-[500]`}
                     >
-                      {/* <div className={`flex justify-start items-center gap-4`}>
-                        {previewFile(file, true)}
-                      </div> */}
-                      {/* <p> */}
-                      {collection.name?.length > 25
-                        ? `${collection.name.substring(0, 25)}...`
-                        : collection.name}
-                      {/* </p> */}
+                      {collection?.name?.length > 25
+                        ? `${collection?.name.substring(0, 25)}...`
+                        : collection?.name}
                     </td>
                     <td
                       className={`w-auto py-3 px-2 text-sm text-start font-[500]`}
                     >
-                      {formatDate(collection.updatedAt)}
+                      {formatDate(collection?.updatedAt)}
                     </td>
                     <td className={`py-3 px-2 text-sm text-start font-[500]`}>
                       {collection?.files?.length}
                     </td>
                     <td className={`relative py-3 px-2 text-sm text-start`}>
                       <div
-                        // onClick={() => {
-                        //   onMenuClick(index);
-                        // }}
+                        onClick={() => {
+                          setShowCollectionMenu(collection?._id);
+                        }}
                         className={`menuBtn inline-block w-auto p-2 rounded-full cursor-pointer hover:bg-dark-primary transition-all duration-300`}
                       >
                         <BsThreeDotsVertical className={`text-base`} />
                       </div>
-                      {/* {showCollectionMenu && (
-                          <OptionsMenu
-                            onDeleteFile={onDeleteFile}
-                            files={files}
-                            index={showMenu}
-                            setShowMenu={setShowMenu}
-                            setShow={setShow}
-                            setRename={setRename}
-                            setShareFile={setShareFile}
+                      {showCollectionMenu !== null &&
+                        showCollectionMenu === collection?._id && (
+                          <CollectionsMenu
+                            collection={collection}
+                            setShow={setShowCollectionMenu}
                           />
-                        )} */}
+                        )}
                     </td>
                   </tr>
                 );

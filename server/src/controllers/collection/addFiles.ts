@@ -16,7 +16,7 @@ const addFiles = async (req: Request, res: Response) => {
         }
 
         if (collection.owner.toString() !== userId && !collection.members.find((member: any) => member.toString() === userId)) {
-            return res.status(401).json({ success, error: "You dont have the required access rights" });
+            return res.status(401).json({ success, error: "You dont have the required access" });
         }
 
         let formData = new IncomingForm();
@@ -29,7 +29,7 @@ const addFiles = async (req: Request, res: Response) => {
             if (Object.keys(files).length === 0) {
                 return res
                     .status(422)
-                    .json({ success, error: "Add Restaurant body cannot be empty!" });
+                    .json({ success, error: "Add files body cannot be empty!" });
             }
 
             for (const key of Object.keys(files)) {
