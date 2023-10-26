@@ -287,7 +287,7 @@ const CollectionDetailsPage = () => {
       <OpenFile show={show} setShow={setShow} />
 
       {rename && (
-        <RenameFile type="file" show={rename} setShow={setRename} />
+        <RenameFile type="file" show={rename} setShow={setRename} collection={collection} />
       )}
 
       {shareFile && <ShareFileModal show={shareFile} setShow={setShareFile} />}

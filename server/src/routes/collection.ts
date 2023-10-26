@@ -7,6 +7,7 @@ import getAllCollections from "../controllers/collection/getAllCollections";
 import getCollection from "../controllers/collection/getCollection";
 import deleteCollection from "../controllers/collection/deleteCollection";
 import renameCollection from "../controllers/collection/renameCollection";
+import renameFile from "../controllers/collection/renameFile";
 
 const router = express.Router();
 
@@ -21,6 +22,12 @@ router.get("/:id", fetchUser, getCollection);
 router.put("/:id", [
     body("name", "Name cannot be empty").isLength({ min: 1 })
 ], fetchUser, renameCollection);
+
+router.put("/:id/rename-file", [
+    body("filename", "Name cannot be empty").isLength({ min: 1 }),
+    body("id", "File ID cannot be empty").exists()
+], fetchUser, renameFile);
+
 router.delete("/:id", fetchUser, deleteCollection);
 
 export default router;

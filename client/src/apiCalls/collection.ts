@@ -36,6 +36,17 @@ export const renameCollection = async ({id, name}:renameCollectionPropType) => {
     return data;
 }
 
+type renameFilePropType = {
+    collectionId: String;
+    id: String;
+    filename: String;
+}
+
+export const renameFile = async ({collectionId, id, filename}:renameFilePropType) => {
+    const { data } = await api.put(`${url}/api/collections/${collectionId}/rename-file`, {id, filename});
+    return data;
+}
+
 export const deleteCollection = async (id:string) => {
     const { data } = await api.delete(`${url}/api/collections/${id}`);
     return data;

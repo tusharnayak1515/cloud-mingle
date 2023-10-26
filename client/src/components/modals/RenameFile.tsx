@@ -4,21 +4,23 @@ import React, { useState } from "react";
 import dynamic from "next/dynamic";
 import ReactDom from "react-dom";
 import { toast } from "react-toastify";
-import { renameCollection } from "@/apiCalls/collection";
+import { renameCollection, renameFile } from "@/apiCalls/collection";
 import { useDispatch } from "react-redux";
-import { setCollections } from "@/redux/reducers/collectionReducer";
+import { setCollection, setCollections } from "@/redux/reducers/collectionReducer";
 
 const Modal = dynamic(() => import("./Modal"), { ssr: false });
 
 type propType = {
   type: string;
+  collection?: any;
   show: any;
   setShow: Function;
 };
 
-const RenameFile = ({ type, show, setShow }: propType) => {
-  console.log("type: ",type);
-  console.log("show: ",show);
+const RenameFile = ({ type, show, setShow, collection }: propType) => {
+  console.log("type: ", type);
+  console.log("show: ", show);
+  console.log("collection: ", collection);
   const dispatch: any = useDispatch();
   const [fileName, setFileName] = useState(
     type === "collection"
@@ -26,9 +28,17 @@ const RenameFile = ({ type, show, setShow }: propType) => {
         ? show?.name
         : ""
       : show
-      ? show?.filename
+      ? show?.filename?.substring(0,show?.filename?.lastIndexOf("."))
       : ""
   );
+
+  const extension =
+    type === "collection"
+      ? ""
+      : show?.filename?.substring(
+          show?.filename?.lastIndexOf("."),
+          show?.filename?.length
+        );
 
   const onChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
@@ -39,13 +49,15 @@ const RenameFile = ({ type, show, setShow }: propType) => {
     e.preventDefault();
     try {
       if (show && fileName.replace("/s/g", "").trim().length !== 0) {
-        const res: any = await renameCollection({
+        console.log("file id: ",show?._id);
+        const res: any = await renameFile({
+          collectionId: collection?._id,
           id: show?._id,
-          name: fileName,
+          filename: `${fileName}${extension}`,
         });
         if (res.success) {
-          dispatch(setCollections({ collections: res.collections }));
-          toast.success("Collection renamed successfully", {
+          dispatch(setCollection({ collection: res.collection }));
+          toast.success("File renamed successfully", {
             position: "top-right",
             autoClose: 3000,
             hideProgressBar: false,
