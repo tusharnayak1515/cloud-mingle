@@ -6,15 +6,47 @@ import { MdDelete, MdOutlineDriveFileRenameOutline } from "react-icons/md";
 import { FiDownload } from "react-icons/fi";
 import { BsShareFill } from "react-icons/bs";
 import { useRouter } from "next/navigation";
-import { useDispatch } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import { deleteCollection } from "@/apiCalls/collection";
+import { setCollections } from "@/redux/reducers/collectionReducer";
 
 const CollectionsMenu = ({ collection, setShow }: any) => {
   const router = useRouter();
-  const dispatch:any = useDispatch();
+  const dispatch: any = useDispatch();
+  const { profile } = useSelector(
+    (state: any) => state.userReducer,
+    shallowEqual
+  );
 
   const onDeleteClick = async () => {
     // onDeleteFile(index);
     // setShowMenu(null);
+    try {
+      const res: any = await deleteCollection(collection?._id);
+      if (res.success) {
+        dispatch(setCollections({ collections: res.collections }));
+        toast.success("Collection deleted successfully", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      }
+    } catch (error: any) {
+      toast.error(error.response.data.error, {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
   };
 
   const onDownloadFile = () => {
@@ -34,9 +66,9 @@ const CollectionsMenu = ({ collection, setShow }: any) => {
     // setRename(file);
   };
 
-  const onOpen = ()=> {
-    router.push(`/collections/${collection?._id}`)
-  }
+  const onOpen = () => {
+    router.push(`/collections/${collection?._id}`);
+  };
 
   return (
     <div
@@ -51,14 +83,6 @@ const CollectionsMenu = ({ collection, setShow }: any) => {
       >
         <HiViewfinderCircle className={`text-xl`} />
         <p>Open</p>
-      </div>
-
-      <div
-        onClick={onDownloadFile}
-        className={`w-full p-2 flex justify-start items-center gap-4  hover:bg-dark-secondary cursor-pointer`}
-      >
-        <FiDownload className={`text-xl`} />
-        <p>Download</p>
       </div>
 
       <div
@@ -77,13 +101,15 @@ const CollectionsMenu = ({ collection, setShow }: any) => {
         <p>Share</p>
       </div>
 
-      <div
-        className={`w-full p-2 flex justify-start items-center gap-4  hover:bg-dark-secondary cursor-pointer`}
-        onClick={onDeleteClick}
-      >
-        <MdDelete className={`text-xl`} />
-        <p>Delete</p>
-      </div>
+      {profile?._id === collection?.owner?._id && (
+        <div
+          className={`w-full p-2 flex justify-start items-center gap-4  hover:bg-dark-secondary cursor-pointer`}
+          onClick={onDeleteClick}
+        >
+          <MdDelete className={`text-xl`} />
+          <p>Delete</p>
+        </div>
+      )}
     </div>
   );
 };

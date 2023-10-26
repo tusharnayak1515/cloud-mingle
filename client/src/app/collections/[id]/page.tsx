@@ -44,8 +44,6 @@ const CollectionDetailsPage = () => {
     (state: any) => state.collectionReducer,
     shallowEqual
   );
-
-  const [files, setFiles] = useState<File[] | any[]>([]);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [showMenu, setShowMenu] = useState<string | null>(null);
   const [show, setShow] = useState<File | null>(null);
@@ -65,7 +63,6 @@ const CollectionDetailsPage = () => {
 
   const onAddFile = async () => {
     if (selectedFile) {
-      setFiles([...files, selectedFile]);
       try {
         const formData = new FormData();
         formData.append("file", selectedFile);
@@ -124,7 +121,7 @@ const CollectionDetailsPage = () => {
   };
 
   const previewFile = (file: any, icon?: boolean) => {
-    const fileType = file?.contentType;
+    const fileType = file?.type || file?.contentType;
     try {
       if (fileType?.startsWith("image/")) {
         if (icon) {
@@ -227,7 +224,7 @@ const CollectionDetailsPage = () => {
   };
 
   const onDeleteFile = (index: number) => {
-    setFiles((prev: File[]) => prev.filter((_, id: number) => index !== id));
+    // setFiles((prev: File[]) => prev.filter((_, id: number) => index !== id));
   };
 
   const onRenameFile = (
@@ -235,21 +232,21 @@ const CollectionDetailsPage = () => {
     name: string,
     extension: string
   ) => {
-    setFiles((prevFiles) => {
-      return prevFiles.map((file: File) => {
-        if (file === fileToRename) {
-          return {
-            name: `${name}${extension}`,
-            lastModified: file.lastModified,
-            lastModifiedDate: file.lastModified,
-            size: file.size,
-            type: file.type,
-            webkitRelativePath: file.webkitRelativePath,
-          };
-        }
-        return file;
-      });
-    });
+    // setFiles((prevFiles) => {
+    //   return prevFiles.map((file: File) => {
+    //     if (file === fileToRename) {
+    //       return {
+    //         name: `${name}${extension}`,
+    //         lastModified: file.lastModified,
+    //         lastModifiedDate: file.lastModified,
+    //         size: file.size,
+    //         type: file.type,
+    //         webkitRelativePath: file.webkitRelativePath,
+    //       };
+    //     }
+    //     return file;
+    //   });
+    // });
     setRename(null);
   };
 
@@ -345,21 +342,21 @@ const CollectionDetailsPage = () => {
         />
       </div>
       <button
-        className={`py-2 px-4 text-dark-secondary rounded-md hover:bg-dark-secondary-btn self-center
-        bg-dark-primary-btn transition-all duration-300`}
+        className={`py-2 px-4 text-dark-secondary rounded-md hover:bg-dark-secondary-btn 
+        bg-dark-primary-btn transition-all duration-300 self-center`}
         onClick={onAddFile}
       >
         Upload
       </button>
 
-      <div className={`w-full my-6`}>
+      <div className={`w-full my-4`}>
         {collection?.files?.length === 0 ? (
           <p className={`text-center text-lg`}>No files uploaded</p>
         ) : (
           <div
-            className={`w-[60%] mx-auto flex flex-col justify-start items-center gap-4`}
+            className={`w-[60% flex flex-col justify-start items-center gap-4`}
           >
-            <table className={`w-full my-8 bg-transparent`}>
+            <table className={`w-full bg-transparent`}>
               <thead>
                 <tr>
                   <th className={`py-3 px-2 text-start`}>Name</th>
@@ -387,9 +384,9 @@ const CollectionDetailsPage = () => {
                         >
                           {previewFile(file, true)}
                           <p>
-                            {file?.name?.length > 25
-                              ? `${file?.name?.substring(0, 25)}...`
-                              : file?.name}
+                            {file?.filename?.length > 25
+                              ? `${file?.filename?.substring(0, 25)}...`
+                              : file?.filename}
                           </p>
                         </div>
                       </td>

@@ -25,3 +25,8 @@ export const addFile = async ({formData, id}:any) => {
     const { data } = await api.post(`${url}/api/collections/add-files/${id}`, formData);
     return data;
 }
+
+export const deleteCollection = async (id:string) => {
+    const { data } = await api.delete(`${url}/api/collections/${id}`);
+    return data;
+}

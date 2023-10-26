@@ -46,6 +46,15 @@ const Signin = () => {
           dispatch(setUser({ token: res.token }));
           dispatch(setProfile({ user: res.user }));
           setIsLoading(false);
+          toast.success("Welcome back", {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
         }
       } else if (!emailRegex.test(email)) {
         setIsLoading(false);

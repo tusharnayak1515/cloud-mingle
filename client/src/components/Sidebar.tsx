@@ -51,16 +51,6 @@ const Sidebar = () => {
           <RiUserShared2Line className={`text-xl`} />
           <p>Shared</p>
         </Link>
-
-        <Link
-          href={`/collections`}
-          className={`w-full p-3 
-          flex justify-start items-center gap-2 rounded-md 
-          cursor-pointer hover:bg-dark-hover bg-transparent`}
-        >
-          <FaFolderOpen className={`text-xl`} />
-          <p>My Collections</p>
-        </Link>
       </div>
       
       <p className={`px-3 text-[14px] font-semibold`}>© 2023 CloudMingle</p>
