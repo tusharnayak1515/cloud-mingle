@@ -26,6 +26,16 @@ export const addFile = async ({formData, id}:any) => {
     return data;
 }
 
+type renameCollectionPropType = {
+    id: String;
+    name: String;
+}
+
+export const renameCollection = async ({id, name}:renameCollectionPropType) => {
+    const { data } = await api.put(`${url}/api/collections/${id}`, {name});
+    return data;
+}
+
 export const deleteCollection = async (id:string) => {
     const { data } = await api.delete(`${url}/api/collections/${id}`);
     return data;

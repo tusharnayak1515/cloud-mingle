@@ -3,54 +3,131 @@
 import React, { useState } from "react";
 import dynamic from "next/dynamic";
 import ReactDom from "react-dom";
-const Modal = dynamic(()=> import("./Modal"),{ssr: false});
+import { toast } from "react-toastify";
+import { renameCollection } from "@/apiCalls/collection";
+import { useDispatch } from "react-redux";
+import { setCollections } from "@/redux/reducers/collectionReducer";
+
+const Modal = dynamic(() => import("./Modal"), { ssr: false });
 
 type propType = {
-  show: File | null;
+  type: string;
+  show: any;
   setShow: Function;
-  onRename: Function;
 };
 
-const RenameFile = ({ show, setShow, onRename }: propType) => {
+const RenameFile = ({ type, show, setShow }: propType) => {
+  console.log("type: ",type);
+  console.log("show: ",show);
+  const dispatch: any = useDispatch();
   const [fileName, setFileName] = useState(
-    show ? show?.name.substring(0, show?.name.lastIndexOf(".")) : ""
+    type === "collection"
+      ? show
+        ? show?.name
+        : ""
+      : show
+      ? show?.filename
+      : ""
   );
-  const extension: string = show
-    ? show?.name.substring(show?.name.lastIndexOf("."))
-    : "";
 
   const onChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     setFileName(e.target.value);
   };
 
-  const onRenameFile = () => {
-    if (show && fileName.replace("/s/g", "").trim().length !== 0) {
-      onRename(show, fileName, extension);
-      setShow(null);
+  const onRenameFile = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      if (show && fileName.replace("/s/g", "").trim().length !== 0) {
+        const res: any = await renameCollection({
+          id: show?._id,
+          name: fileName,
+        });
+        if (res.success) {
+          dispatch(setCollections({ collections: res.collections }));
+          toast.success("Collection renamed successfully", {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+          setShow(null);
+        }
+      }
+    } catch (error: any) {
+      toast.error(error.response.data.error, {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+  };
+
+  const onRenameCollection = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      if (show && fileName.replace("/s/g", "").trim().length !== 0) {
+        const res: any = await renameCollection({
+          id: show?._id,
+          name: fileName,
+        });
+        if (res.success) {
+          dispatch(setCollections({ collections: res.collections }));
+          toast.success("Collection renamed successfully", {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+          setShow(null);
+        }
+      }
+    } catch (error: any) {
+      toast.error(error.response.data.error, {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
     }
   };
 
   return ReactDom.createPortal(
-    <Modal
-    >
+    <Modal>
       <div id="preview" className={`h-[220px] w-[30%] mx-auto `}>
         <form
           className={`h-full w-full my-[20%] 
             text-dark-primary p-4 flex flex-col justify-start items-center gap-4 rounded-md overflow-hidden bg-dark-secondary`}
-          onSubmit={onRenameFile}
+          onSubmit={type === "file" ? onRenameFile : onRenameCollection}
         >
-          <p className={`text-2xl font-bold`}>Rename file</p>
+          <p className={`text-2xl font-bold`}>
+            {type === "file" ? `Rename file` : `Rename collection`}
+          </p>
 
           <div
             className={`w-full flex flex-col justify-start items-start gap-[0.2rem]`}
           >
-            <label htmlFor="name">File Name</label>
+            <label htmlFor="name">
+              {type === "file" ? `File name` : `Collection name`}
+            </label>
             <input
               type="text"
               name="name"
               id="name"
-              placeholder="File name"
+              placeholder={type === "file" ? `File name` : `Collection name`}
               value={fileName}
               onChange={onChangeHandler}
               className={`w-full py-2 px-4 bg-dark-primary rounded-md outline-none`}

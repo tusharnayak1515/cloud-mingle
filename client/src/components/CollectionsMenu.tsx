@@ -11,7 +11,7 @@ import { toast } from "react-toastify";
 import { deleteCollection } from "@/apiCalls/collection";
 import { setCollections } from "@/redux/reducers/collectionReducer";
 
-const CollectionsMenu = ({ collection, setShow }: any) => {
+const CollectionsMenu = ({ collection, setRenameFile }: any) => {
   const router = useRouter();
   const dispatch: any = useDispatch();
   const { profile } = useSelector(
@@ -63,7 +63,7 @@ const CollectionsMenu = ({ collection, setShow }: any) => {
   };
 
   const onRenameClick = () => {
-    // setRename(file);
+    setRenameFile(collection);
   };
 
   const onOpen = () => {

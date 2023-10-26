@@ -11,6 +11,7 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import { formatDate } from "@/utils/util";
 import FolderOptions from "@/components/FolderOptions";
 import CollectionsMenu from "@/components/CollectionsMenu";
+import RenameFile from "@/components/modals/RenameFile";
 const AddCollectionModal = dynamic(
   () => import("@/components/modals/AddCollectionModal"),
   { ssr: false }
@@ -29,6 +30,7 @@ const Home = () => {
   const [showFolderMenu, setShowFolderMenu] = useState(false);
   const [isCreateCollection, setIsCreateCollection] = useState(false);
   const [showCollectionMenu, setShowCollectionMenu] = useState(null);
+  const [renameFile, setRenameFile] = useState(null);
 
   const fetchMyCollections = async () => {
     setIsLoading(true);
@@ -90,6 +92,10 @@ const Home = () => {
 
       {isCreateCollection && (
         <AddCollectionModal setShow={setIsCreateCollection} />
+      )}
+
+      {renameFile && (
+        <RenameFile type="collection" show={renameFile} setShow={setRenameFile} />
       )}
 
       <h1 className={`text-2xl font-bold`}>My Collections</h1>
@@ -161,7 +167,7 @@ const Home = () => {
                         showCollectionMenu === collection?._id && (
                           <CollectionsMenu
                             collection={collection}
-                            setShow={setShowCollectionMenu}
+                            setRenameFile={setRenameFile}
                           />
                         )}
                     </td>

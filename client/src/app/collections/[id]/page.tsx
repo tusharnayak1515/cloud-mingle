@@ -227,29 +227,6 @@ const CollectionDetailsPage = () => {
     // setFiles((prev: File[]) => prev.filter((_, id: number) => index !== id));
   };
 
-  const onRenameFile = (
-    fileToRename: File,
-    name: string,
-    extension: string
-  ) => {
-    // setFiles((prevFiles) => {
-    //   return prevFiles.map((file: File) => {
-    //     if (file === fileToRename) {
-    //       return {
-    //         name: `${name}${extension}`,
-    //         lastModified: file.lastModified,
-    //         lastModifiedDate: file.lastModified,
-    //         size: file.size,
-    //         type: file.type,
-    //         webkitRelativePath: file.webkitRelativePath,
-    //       };
-    //     }
-    //     return file;
-    //   });
-    // });
-    setRename(null);
-  };
-
   const fetchCollection = async (id: any) => {
     try {
       const res: any = await getCollectionById(id);
@@ -310,7 +287,7 @@ const CollectionDetailsPage = () => {
       <OpenFile show={show} setShow={setShow} />
 
       {rename && (
-        <RenameFile show={rename} setShow={setRename} onRename={onRenameFile} />
+        <RenameFile type="file" show={rename} setShow={setRename} />
       )}
 
       {shareFile && <ShareFileModal show={shareFile} setShow={setShareFile} />}
