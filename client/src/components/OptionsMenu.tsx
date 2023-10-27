@@ -34,10 +34,12 @@ const OptionsMenu = ({
 
   const onDownloadFile = () => {
     if (file) {
-      const url = URL.createObjectURL(file);
+      const buffer: Buffer = Buffer.from(file?.data?.data, "base64url");
+      const blob = new Blob([buffer], { type: file.contentType });
+      const blobUrl = URL.createObjectURL(blob);
       const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", file.name);
+      link.href = blobUrl;
+      link.setAttribute("download", file.filename);
       link.style.display = "hidden";
       document.body.appendChild(link);
       link.click();
