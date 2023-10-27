@@ -1,9 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { HiViewfinderCircle } from "react-icons/hi2";
 import { MdDelete, MdOutlineDriveFileRenameOutline } from "react-icons/md";
-import { FiDownload } from "react-icons/fi";
 import { BsShareFill } from "react-icons/bs";
 import { useRouter } from "next/navigation";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
@@ -20,8 +19,6 @@ const CollectionsMenu = ({ collection, setRenameFile }: any) => {
   );
 
   const onDeleteClick = async () => {
-    // onDeleteFile(index);
-    // setShowMenu(null);
     try {
       const res: any = await deleteCollection(collection?._id);
       if (res.success) {
@@ -47,19 +44,6 @@ const CollectionsMenu = ({ collection, setRenameFile }: any) => {
         progress: undefined,
       });
     }
-  };
-
-  const onDownloadFile = () => {
-    // if (file) {
-    //   const url = URL.createObjectURL(file);
-    //   const link = document.createElement("a");
-    //   link.href = url;
-    //   link.setAttribute("download", file.name);
-    //   link.style.display = "hidden";
-    //   document.body.appendChild(link);
-    //   link.click();
-    //   document.body.removeChild(link);
-    // }
   };
 
   const onRenameClick = () => {
@@ -101,7 +85,7 @@ const CollectionsMenu = ({ collection, setRenameFile }: any) => {
         <p>Share</p>
       </div>
 
-      {profile?._id === collection?.owner?._id && (
+      {(profile?._id === collection?.owner?._id) && (
         <div
           className={`w-full p-2 flex justify-start items-center gap-4  hover:bg-dark-secondary cursor-pointer`}
           onClick={onDeleteClick}

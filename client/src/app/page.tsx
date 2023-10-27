@@ -12,6 +12,7 @@ import { formatDate } from "@/utils/util";
 import FolderOptions from "@/components/FolderOptions";
 import CollectionsMenu from "@/components/CollectionsMenu";
 import RenameFile from "@/components/modals/RenameFile";
+import { MdOutlineDriveFileRenameOutline } from "react-icons/md";
 const AddCollectionModal = dynamic(
   () => import("@/components/modals/AddCollectionModal"),
   { ssr: false }
@@ -95,13 +96,27 @@ const Home = () => {
       )}
 
       {renameFile && (
-        <RenameFile type="collection" show={renameFile} setShow={setRenameFile} />
+        <RenameFile
+          type="collection"
+          show={renameFile}
+          setShow={setRenameFile}
+        />
       )}
 
       <h1 className={`text-2xl font-bold`}>My Collections</h1>
 
       {collections?.length === 0 ? (
-        <p>No collections to show</p>
+        <div className={`flex flex-col justify-start items-start gap-2`}>
+          <p className={`text-lg`}>No collections to show</p>
+          <button
+            onClick={()=> setIsCreateCollection(true)}
+            className={`w-full py-3 px-2 flex justify-start items-center gap-4 rounded-md
+            hover:shadow-dark-menuShadow cursor-pointer bg-dark-primary`}
+          >
+            <MdOutlineDriveFileRenameOutline className={`text-xl`} />
+            <p>New</p>
+          </button>
+        </div>
       ) : (
         <div className={`w-full my-4 `}>
           <table className={`w-full bg-transparent`}>

@@ -7,10 +7,16 @@ const getAllCollections = async (req: Request, res: Response) => {
     try {
         const userId: string = req.body.user.id;
 
-        const collections: ICollection[] = await Collection.find({ $or: [{ owner: userId }, { members: { $in: userId } }] })
+        const collections: ICollection[] = await Collection.find({
+            $or: [{ owner: userId }, { "members.member": userId }],
+        })
             .populate({ path: "owner", select: "-password" })
             .populate({
-                path: "members",
+                path: "members.member",
+                select: "-password",
+            })
+            .populate({
+                path: "files.addedBy",
                 select: "-password",
             });
 

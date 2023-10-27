@@ -20,20 +20,22 @@ const renameFile = async (req: Request, res: Response) => {
             return res.status(404).json({ success, error: "Collection does not exist!" });
         }
 
-        if (collection?.owner.toString() !== userId) {
-            return res.status(401).json({ success, error: "You are not allowed to do this" });
-        }
-
         const file: any = collection?.files.find((file: any) => file?._id.toString() === id);
-
         if (!file) {
             return res.status(404).json({ success, error: "File does not exist!" });
+        }
+
+        let memberObj: any = collection?.members.find((obj: any) => obj?.member?.toString() === userId);
+
+        if (collection?.owner.toString() !== userId && (!memberObj || memberObj?.role !== "full-access") || file?.addedBy?.toString() !== userId) {
+            return res.status(401).json({ success, error: "You are not allowed to do this" });
         }
 
         const data: any = {
             filename,
             contentType: file?.contentType,
-            data: file?.data
+            data: file?.data,
+            addedBy: file?.addedBy?.toString()
         };
 
         const files: any[] = collection?.files?.map((item: any) => item?._id.toString() === id ? data : item);
@@ -43,7 +45,11 @@ const renameFile = async (req: Request, res: Response) => {
         collection = await Collection.findById(collectionId)
             .populate({ path: "owner", select: "-password" })
             .populate({
-                path: "members",
+                path: "members.member",
+                select: "-password",
+            })
+            .populate({
+                path: "files.addedBy",
                 select: "-password",
             });
 

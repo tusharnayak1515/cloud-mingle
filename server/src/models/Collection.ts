@@ -14,7 +14,11 @@ const CollectionSchema = new Schema<ICollectionDocument, ICollectionModel>({
         {
             data: Buffer,
             filename: String,
-            contentType: String
+            contentType: String,
+            addedBy: {
+                type: Schema.Types.ObjectId,
+                ref: "User"
+            }
         }
     ],
     owner: {
@@ -23,8 +27,14 @@ const CollectionSchema = new Schema<ICollectionDocument, ICollectionModel>({
     },
     members: [
         {
-            type: Schema.Types.ObjectId,
-            ref: "User"
+            member: {
+                type: Schema.Types.ObjectId,
+                ref: "User"
+            },
+            role: {
+                type: String,
+                default: null
+            }
         }
     ],
     createdAt: Number,

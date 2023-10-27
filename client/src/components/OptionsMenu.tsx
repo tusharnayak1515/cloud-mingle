@@ -4,6 +4,7 @@ import React from "react";
 import { HiViewfinderCircle } from "react-icons/hi2";
 import { MdDelete, MdOutlineDriveFileRenameOutline } from "react-icons/md";
 import { FiDownload } from "react-icons/fi";
+import { shallowEqual, useSelector } from "react-redux";
 
 const OptionsMenu = ({
   file,
@@ -12,6 +13,19 @@ const OptionsMenu = ({
   setShow,
   setRename,
 }: any) => {
+  const { profile } = useSelector(
+    (state: any) => state.userReducer,
+    shallowEqual
+  );
+
+  const { collection } = useSelector(
+    (state: any) => state.collectionReducer,
+    shallowEqual
+  );
+
+  const memberObj: any = collection?.members?.find(
+    (obj: any) => obj?.member?._id === profile?._id
+  );
 
   const onDeleteClick = () => {
     onDeleteFile(file?._id);
@@ -61,21 +75,29 @@ const OptionsMenu = ({
         <p>Download</p>
       </div>
 
-      <div
-        onClick={onRenameClick}
-        className={`w-full p-2 flex justify-start items-center gap-4  hover:bg-dark-secondary cursor-pointer`}
-      >
-        <MdOutlineDriveFileRenameOutline className={`text-xl`} />
-        <p>Rename</p>
-      </div>
+      {(collection?.owner?._id === profile?._id ||
+        memberObj?.role === "full-access" ||
+        file?.addedBy?._id === profile?._id) && (
+        <div
+          onClick={onRenameClick}
+          className={`w-full p-2 flex justify-start items-center gap-4  hover:bg-dark-secondary cursor-pointer`}
+        >
+          <MdOutlineDriveFileRenameOutline className={`text-xl`} />
+          <p>Rename</p>
+        </div>
+      )}
 
-      <div
-        className={`w-full p-2 flex justify-start items-center gap-4  hover:bg-dark-secondary cursor-pointer`}
-        onClick={onDeleteClick}
-      >
-        <MdDelete className={`text-xl`} />
-        <p>Delete</p>
-      </div>
+      {(collection?.owner?._id === profile?._id ||
+        memberObj?.role === "full-access" ||
+        file?.addedBy?._id === profile?._id) && (
+        <div
+          className={`w-full p-2 flex justify-start items-center gap-4  hover:bg-dark-secondary cursor-pointer`}
+          onClick={onDeleteClick}
+        >
+          <MdDelete className={`text-xl`} />
+          <p>Delete</p>
+        </div>
+      )}
     </div>
   );
 };

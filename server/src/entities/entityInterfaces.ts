@@ -26,9 +26,13 @@ export interface ICollection {
         data: Buffer;
         filename: string;
         contentType: string;
+        addedBy: Types.ObjectId | string;
     }[];
     owner: Types.ObjectId | string;
-    members: (Types.ObjectId | string)[];
+    members: {
+        member: Types.ObjectId | string;
+        role: string | null;
+    }[];
     createdAt?: number;
     updatedAt?: number;
 }

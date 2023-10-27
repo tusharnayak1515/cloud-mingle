@@ -14,14 +14,20 @@ const getCollection = async (req: Request, res: Response) => {
             return res.status(404).json({ success, error: "Collection not found" });
         }
 
-        if (collection?.owner.toString() !== userId && !collection?.members.find((member: any) => member.toString() === userId)) {
+        let memberObj: any = collection?.members.find((obj: any) => obj?.member?.toString() === userId);
+
+        if (collection?.owner.toString() !== userId && !memberObj) {
             return res.status(401).json({ success, error: "You dont have the required access" });
         }
 
         collection = await Collection.findById(collectionId)
             .populate({ path: "owner", select: "-password" })
             .populate({
-                path: "members",
+                path: "members.member",
+                select: "-password",
+            })
+            .populate({
+                path: "files.addedBy",
                 select: "-password",
             });
 

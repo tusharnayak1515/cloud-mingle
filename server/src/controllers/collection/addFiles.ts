@@ -15,7 +15,11 @@ const addFiles = async (req: Request, res: Response) => {
             return res.status(404).json({ success, error: "Collection not found" });
         }
 
-        if (collection.owner.toString() !== userId && !collection.members.find((member: any) => member.toString() === userId)) {
+        let memberObj: any = collection.members.find((obj: any) => obj?.member?.toString() === userId);
+
+        console.log("memberObj: ", memberObj);
+
+        if (collection.owner.toString() !== userId && (!memberObj || ["write-only", "full-access"].indexOf(memberObj?.role) === -1)) {
             return res.status(401).json({ success, error: "You dont have the required access" });
         }
 
@@ -49,6 +53,7 @@ const addFiles = async (req: Request, res: Response) => {
                     filename: file.originalFilename,
                     data: fileData,
                     contentType: file.mimetype,
+                    addedBy: userId
                 };
 
                 console.log("new File: ", newFile);
@@ -58,7 +63,7 @@ const addFiles = async (req: Request, res: Response) => {
                 collection = await Collection.findById(collectionId)
                     .populate({ path: "owner", select: "-password" })
                     .populate({
-                        path: "members",
+                        path: "members.member",
                         select: "-password",
                     });
             }

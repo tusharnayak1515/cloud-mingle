@@ -14,13 +14,19 @@ const deleteFile = async (req: Request, res: Response) => {
             return res.status(404).json({ success, error: "Collection does not exist" });
         }
 
-        if (collection?.owner?.toString() !== userId && !collection.members.find((member: any) => member.toString() === userId)) {
-            return res.status(401).json({ success, errror: "You are not allowed to do this" })
+        let memberObj: any = collection.members.find((obj: any) => obj?.member?.toString() === userId);
+
+        if (collection?.owner?.toString() !== userId && !memberObj) {
+            return res.status(401).json({ success, errror: "You are not allowed to do this" });
         }
 
         let file: any = collection?.files?.find((file: any) => file?._id.toString() === fileId);
         if (!file) {
             return res.status(404).json({ success, error: "File does not exist" });
+        }
+
+        if (collection?.owner?.toString() !== userId && memberObj?.role !== "full-access" && file?.addedBy?.toString() !== userId) {
+            return res.status(401).json({ success, errror: "You are not allowed to do this" });
         }
 
         collection = await Collection.findByIdAndUpdate(
@@ -32,7 +38,11 @@ const deleteFile = async (req: Request, res: Response) => {
         collection = await Collection.findById(collectionId)
             .populate({ path: "owner", select: "-password" })
             .populate({
-                path: "members",
+                path: "members.member",
+                select: "-password",
+            })
+            .populate({
+                path: "files.addedBy",
                 select: "-password",
             });
 

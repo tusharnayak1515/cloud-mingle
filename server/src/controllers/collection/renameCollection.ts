@@ -26,10 +26,16 @@ const renameCollection = async (req: Request, res: Response) => {
 
         await Collection.findByIdAndUpdate(collectionId, { name }, { new: true });
 
-        const collections: ICollection[] = await Collection.find({ $or: [{ owner: userId }, { members: { $in: userId } }] })
+        const collections: ICollection[] = await Collection.find({
+            $or: [{ owner: userId }, { "members.member": userId }],
+        })
             .populate({ path: "owner", select: "-password" })
             .populate({
-                path: "members",
+                path: "members.member",
+                select: "-password",
+            })
+            .populate({
+                path: "files.addedBy",
                 select: "-password",
             });
 
