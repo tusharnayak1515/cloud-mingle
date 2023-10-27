@@ -54,6 +54,13 @@ const addFiles = async (req: Request, res: Response) => {
                 console.log("new File: ", newFile);
 
                 collection = await Collection.findByIdAndUpdate(collectionId, { $push: { files: newFile } }, { new: true });
+
+                collection = await Collection.findById(collectionId)
+                    .populate({ path: "owner", select: "-password" })
+                    .populate({
+                        path: "members",
+                        select: "-password",
+                    });
             }
 
             success = true;

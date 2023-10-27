@@ -30,7 +30,7 @@ const renameFile = async (req: Request, res: Response) => {
             return res.status(404).json({ success, error: "File does not exist!" });
         }
 
-        const data:any = {
+        const data: any = {
             filename,
             contentType: file?.contentType,
             data: file?.data
@@ -39,6 +39,13 @@ const renameFile = async (req: Request, res: Response) => {
         const files: any[] = collection?.files?.map((item: any) => item?._id.toString() === id ? data : item);
 
         collection = await Collection.findByIdAndUpdate(collectionId, { files: files }, { new: true });
+
+        collection = await Collection.findById(collectionId)
+            .populate({ path: "owner", select: "-password" })
+            .populate({
+                path: "members",
+                select: "-password",
+            });
 
         success = true;
         return res.status(200).json({ success, collection });

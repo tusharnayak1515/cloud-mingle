@@ -8,6 +8,7 @@ import getCollection from "../controllers/collection/getCollection";
 import deleteCollection from "../controllers/collection/deleteCollection";
 import renameCollection from "../controllers/collection/renameCollection";
 import renameFile from "../controllers/collection/renameFile";
+import deleteFile from "../controllers/collection/deleteFile";
 
 const router = express.Router();
 
@@ -29,5 +30,6 @@ router.put("/:id/rename-file", [
 ], fetchUser, renameFile);
 
 router.delete("/:id", fetchUser, deleteCollection);
+router.delete("/:cid/files/:fid", fetchUser, deleteFile);
 
 export default router;

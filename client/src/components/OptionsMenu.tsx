@@ -1,10 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { HiViewfinderCircle } from "react-icons/hi2";
 import { MdDelete, MdOutlineDriveFileRenameOutline } from "react-icons/md";
 import { FiDownload } from "react-icons/fi";
-import { BsShareFill } from "react-icons/bs";
 
 const OptionsMenu = ({
   file,
@@ -12,7 +11,6 @@ const OptionsMenu = ({
   setShowMenu,
   setShow,
   setRename,
-  setShareFile,
 }: any) => {
 
   const onDeleteClick = () => {
@@ -69,14 +67,6 @@ const OptionsMenu = ({
       >
         <MdOutlineDriveFileRenameOutline className={`text-xl`} />
         <p>Rename</p>
-      </div>
-
-      <div
-        onClick={() => setShareFile(file)}
-        className={`w-full p-2 flex justify-start items-center gap-4  hover:bg-dark-secondary cursor-pointer`}
-      >
-        <BsShareFill className={`text-xl`} />
-        <p>Share</p>
       </div>
 
       <div

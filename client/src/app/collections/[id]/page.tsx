@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { addFile, getCollectionById } from "@/apiCalls/collection";
+import { addFile, deleteFile, getCollectionById } from "@/apiCalls/collection";
 import { setCollection } from "@/redux/reducers/collectionReducer";
 import { useParams, useRouter } from "next/navigation";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
@@ -223,7 +223,32 @@ const CollectionDetailsPage = () => {
     }
   };
 
-  const onDeleteFile = (index: number) => {
+  const onDeleteFile = async (id: string) => {
+    try {
+      const res:any = await deleteFile({cid: collection?._id, fid: id});
+      if(res.success) {
+        dispatch(setCollection({collection: res.collection}));
+        toast.success("File deleted successfully", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      }
+    } catch (error:any) {
+      toast.error(error.response.data.error, {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
     // setFiles((prev: File[]) => prev.filter((_, id: number) => index !== id));
   };
 
@@ -386,7 +411,6 @@ const CollectionDetailsPage = () => {
                             setShowMenu={setShowMenu}
                             setShow={setShow}
                             setRename={setRename}
-                            setShareFile={setShareFile}
                           />
                         )}
                       </td>

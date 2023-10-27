@@ -47,6 +47,16 @@ export const renameFile = async ({collectionId, id, filename}:renameFilePropType
     return data;
 }
 
+type deleteFilePropType = {
+    cid: String;
+    fid: String;
+}
+
+export const deleteFile = async ({cid,fid}:deleteFilePropType) => {
+    const { data } = await api.delete(`${url}/api/collections/${cid}/files/${fid}`);
+    return data;
+}
+
 export const deleteCollection = async (id:string) => {
     const { data } = await api.delete(`${url}/api/collections/${id}`);
     return data;
