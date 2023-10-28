@@ -11,6 +11,7 @@ import connectToMongo from "./db";
 import otpRoutes from "./routes/otp";
 import authRoutes from "./routes/auth";
 import collectionRoutes from "./routes/collection";
+import inviteRoutes from "./routes/invite";
 
 const app = express();
 const port = process.env.PORT || 9000;
@@ -31,10 +32,12 @@ connectToMongo();
 import "./models/Token";
 import "./models/User";
 import "./models/Collection";
+import "./models/Invite";
 
 app.use("/api/otp", otpRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/collections", collectionRoutes);
+app.use("/api/invites", inviteRoutes);
 
 app.listen(port, () => {
     console.log(`Server started successfully at port ${port}.`);

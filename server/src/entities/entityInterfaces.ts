@@ -42,6 +42,8 @@ export interface IInvite {
     [x: string]: any;
     targetCollection: Types.ObjectId;
     user: Types.ObjectId;
+    role: String;
+    status: String;
     createdAt?: number;
     updatedAt?: number;
 }

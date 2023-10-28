@@ -26,7 +26,7 @@ const deleteFile = async (req: Request, res: Response) => {
         }
 
         if (collection?.owner?.toString() !== userId && memberObj?.role !== "full-access" && file?.addedBy?.toString() !== userId) {
-            return res.status(401).json({ success, errror: "You are not allowed to do this" });
+            return res.status(401).json({ success, errror: "You are not allowed to do this"});
         }
 
         collection = await Collection.findByIdAndUpdate(
