@@ -4,6 +4,7 @@ import Collection from "../../models/Collection";
 import User from "../../models/User";
 import Invite from "../../models/Invite";
 import sendEmail from "../../services/email";
+import { validationResult } from "express-validator";
 
 const sendInvite = async (req: Request, res: Response) => {
     let success: boolean = false;
@@ -11,6 +12,10 @@ const sendInvite = async (req: Request, res: Response) => {
         const userId = req.body.user.id;
         const collectionId = req.params.id;
         const { membersObj } = req.body;
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(422).json({ success, error: errors.array()[0].msg });
+        }
 
         let collection: ICollection | null = await Collection.findById(collectionId);
         if (!collection) {

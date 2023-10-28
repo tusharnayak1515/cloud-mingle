@@ -1,11 +1,17 @@
 import { Request, Response } from "express";
 import Token from "../../models/Token";
 import sendEmail from "../../services/email";
+import { validationResult } from "express-validator";
 
 const sendOtp = async (req:Request, res:Response) => {
   let success:boolean = false;
   try {
     const { email } = req.body;
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ success, error: errors.array()[0].msg });
+    }
+    
     const otp = Math.floor(1000 + Math.random() * 9000);
     let token = await Token.findOne({ email });
 
