@@ -13,7 +13,6 @@ import {
   FaFilePdf,
   FaFilePowerpoint,
   FaFileWord,
-  FaUpload,
 } from "react-icons/fa";
 import { BsCameraVideoFill, BsThreeDotsVertical } from "react-icons/bs";
 import { AiFillFileText, AiFillFileZip } from "react-icons/ai";
@@ -34,16 +33,26 @@ const ShareFileModal = dynamic(
 const OptionsMenu = dynamic(() => import("@/components/OptionsMenu"), {
   ssr: false,
 });
+const UploadFile = dynamic(
+  () => import("@/components/collectionDetails/UploadFile"),
+  {
+    ssr: false,
+  }
+);
 
 const CollectionDetailsPage = () => {
   const router = useRouter();
   const params = useParams();
   const dispatch: any = useDispatch();
-  const { user } = useSelector((state: any) => state.userReducer, shallowEqual);
+  const { user } = useSelector(
+    (state: any) => state.userReducer,
+    shallowEqual
+  );
   const { collection } = useSelector(
     (state: any) => state.collectionReducer,
     shallowEqual
   );
+
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [showMenu, setShowMenu] = useState<string | null>(null);
   const [show, setShow] = useState<File | null>(null);
@@ -225,9 +234,9 @@ const CollectionDetailsPage = () => {
 
   const onDeleteFile = async (id: string) => {
     try {
-      const res:any = await deleteFile({cid: collection?._id, fid: id});
-      if(res.success) {
-        dispatch(setCollection({collection: res.collection}));
+      const res: any = await deleteFile({ cid: collection?._id, fid: id });
+      if (res.success) {
+        dispatch(setCollection({ collection: res.collection }));
         toast.success("File deleted successfully", {
           position: "top-right",
           autoClose: 3000,
@@ -238,7 +247,7 @@ const CollectionDetailsPage = () => {
           progress: undefined,
         });
       }
-    } catch (error:any) {
+    } catch (error: any) {
       toast.error(error.response.data.error, {
         position: "top-right",
         autoClose: 3000,
@@ -312,44 +321,23 @@ const CollectionDetailsPage = () => {
       <OpenFile show={show} setShow={setShow} />
 
       {rename && (
-        <RenameFile type="file" show={rename} setShow={setRename} collection={collection} />
+        <RenameFile
+          type="file"
+          show={rename}
+          setShow={setRename}
+          collection={collection}
+        />
       )}
 
       {shareFile && <ShareFileModal show={shareFile} setShow={setShareFile} />}
 
-      <div
-        onDrop={handleFileDrop}
-        onDragOver={(e) => e.preventDefault()}
-        className={`h-[200px] w-[350px] flex justify-center items-center
-      border-2 border-dashed border-dark-primary rounded-md self-center`}
-      >
-        <label
-          htmlFor="file"
-          className={`h-full w-full flex justify-center items-center`}
-        >
-          {selectedFile ? (
-            <>{previewFile(selectedFile)}</>
-          ) : (
-            <FaUpload
-              className={`text-[4rem] text-dark-primary cursor-pointer`}
-            />
-          )}
-        </label>
-        <input
-          type="file"
-          name="file"
-          id="file"
-          className={`hidden`}
-          onChange={handleFileInputChange}
-        />
-      </div>
-      <button
-        className={`py-2 px-4 text-dark-secondary rounded-md hover:bg-dark-secondary-btn 
-        bg-dark-primary-btn transition-all duration-300 self-center`}
-        onClick={onAddFile}
-      >
-        Upload
-      </button>
+      <UploadFile
+        handleFileDrop={handleFileDrop}
+        selectedFile={selectedFile}
+        previewFile={previewFile}
+        handleFileInputChange={handleFileInputChange}
+        onAddFile={onAddFile}
+      />
 
       <div className={`w-full my-4`}>
         {collection?.files?.length === 0 ? (
@@ -362,6 +350,7 @@ const CollectionDetailsPage = () => {
               <thead>
                 <tr>
                   <th className={`py-3 px-2 text-start`}>Name</th>
+                  <th className={`py-3 px-2 text-start`}>Owner</th>
                   <th className={`py-3 px-2 text-start`}>Last Modified</th>
                   <th className={`py-3 px-2 text-sm text-start`}>
                     <div
@@ -391,6 +380,9 @@ const CollectionDetailsPage = () => {
                               : file?.filename}
                           </p>
                         </div>
+                      </td>
+                      <td className={`py-3 px-2 text-sm text-start font-[500]`}>
+                        {file?.addedBy?.name}
                       </td>
                       <td className={`py-3 px-2 text-sm text-start font-[500]`}>
                         {formatDate(collection?.updatedAt)}

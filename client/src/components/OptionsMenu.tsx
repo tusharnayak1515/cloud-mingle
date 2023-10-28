@@ -79,7 +79,8 @@ const OptionsMenu = ({
 
       {(collection?.owner?._id === profile?._id ||
         memberObj?.role === "full-access" ||
-        file?.addedBy?._id === profile?._id) && (
+        (file?.addedBy?._id === profile?._id &&
+          memberObj?.role === "full-access")) && (
         <div
           onClick={onRenameClick}
           className={`w-full p-2 flex justify-start items-center gap-4  hover:bg-dark-secondary cursor-pointer`}
@@ -91,7 +92,8 @@ const OptionsMenu = ({
 
       {(collection?.owner?._id === profile?._id ||
         memberObj?.role === "full-access" ||
-        file?.addedBy?._id === profile?._id) && (
+        (file?.addedBy?._id === profile?._id &&
+          memberObj?.role === "full-access")) && (
         <div
           className={`w-full p-2 flex justify-start items-center gap-4  hover:bg-dark-secondary cursor-pointer`}
           onClick={onDeleteClick}

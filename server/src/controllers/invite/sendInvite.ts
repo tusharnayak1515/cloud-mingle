@@ -28,7 +28,6 @@ const sendInvite = async (req: Request, res: Response) => {
 
         for (let obj of membersObj) {
             const memberId = obj.member;
-            console.log("memberId: ", memberId);
             const memberRole = obj.role;
             const member: IUser | null = await User.findById(memberId);
             if (!member) {
@@ -60,7 +59,7 @@ const sendInvite = async (req: Request, res: Response) => {
             }
 
             if (invite?.status === "rejected") {
-                invite = await Invite.findByIdAndUpdate(invite?._id?.toString(), { status: "pending" }, { new: true });
+                invite = await Invite.findByIdAndUpdate(invite?._id?.toString(), { status: "pending", role: memberRole }, { new: true });
                 await sendEmail({
                     subject: "Invitation to join a collection",
                     text: `You have a new invitation to join a collection. Navigate to invites page to accept or reject it.`,

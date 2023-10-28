@@ -18,6 +18,10 @@ const CollectionsMenu = ({ collection, setRenameFile }: any) => {
     shallowEqual
   );
 
+  const memberUser = collection?.members?.find(
+    (item: any) => item?.member?._id === profile?._id
+  );
+
   const onDeleteClick = async () => {
     try {
       const res: any = await deleteCollection(collection?._id);
@@ -69,23 +73,27 @@ const CollectionsMenu = ({ collection, setRenameFile }: any) => {
         <p>Open</p>
       </div>
 
-      <div
-        onClick={onRenameClick}
-        className={`w-full p-2 flex justify-start items-center gap-4  hover:bg-dark-secondary cursor-pointer`}
-      >
-        <MdOutlineDriveFileRenameOutline className={`text-xl`} />
-        <p>Rename</p>
-      </div>
+      {(profile?._id === collection?.owner?._id || memberUser?.role === "full-access") && (
+        <div
+          onClick={onRenameClick}
+          className={`w-full p-2 flex justify-start items-center gap-4  hover:bg-dark-secondary cursor-pointer`}
+        >
+          <MdOutlineDriveFileRenameOutline className={`text-xl`} />
+          <p>Rename</p>
+        </div>
+      )}
 
-      <div
-        onClick={() => {}}
-        className={`w-full p-2 flex justify-start items-center gap-4  hover:bg-dark-secondary cursor-pointer`}
-      >
-        <BsShareFill className={`text-xl`} />
-        <p>Share</p>
-      </div>
+      {profile?._id === collection?.owner?._id && (
+        <div
+          onClick={() => {}}
+          className={`w-full p-2 flex justify-start items-center gap-4  hover:bg-dark-secondary cursor-pointer`}
+        >
+          <BsShareFill className={`text-xl`} />
+          <p>Share</p>
+        </div>
+      )}
 
-      {(profile?._id === collection?.owner?._id) && (
+      {profile?._id === collection?.owner?._id && (
         <div
           className={`w-full p-2 flex justify-start items-center gap-4  hover:bg-dark-secondary cursor-pointer`}
           onClick={onDeleteClick}
