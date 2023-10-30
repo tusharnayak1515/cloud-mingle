@@ -29,12 +29,12 @@ const rejectInvite = async (req: Request, res: Response) => {
 
         invite = await Invite.findByIdAndUpdate(inviteId, { status: "rejected" }, { new: true });
 
-        const data: any = {
-            member: userId,
-            role: invite?.role
-        }
+        // const data: any = {
+        //     member: userId,
+        //     role: invite?.role
+        // }
 
-        collection = await Collection.findByIdAndUpdate(collection?._id?.toString(), { $pull: { members: data } }, { new: true });
+        // collection = await Collection.findByIdAndUpdate(collection?._id?.toString(), { $pull: { members: data } }, { new: true });
 
         const invites: IInvite[] = await Invite.find({ user: userId })
             .populate({ path: "targetCollection" })

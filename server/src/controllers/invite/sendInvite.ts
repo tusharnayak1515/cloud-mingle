@@ -26,9 +26,20 @@ const sendInvite = async (req: Request, res: Response) => {
             return res.status(401).json({ success, error: "You dont have the required access" });
         }
 
+        for (let obj of collection?.members) {
+            if (!membersObj.some((item: any) => item?.member === obj?.member?.toString())) {
+                const data: any = {
+                    member: obj?.member?.toString(),
+                    role: obj?.role
+                }
+                collection = await Collection.findByIdAndUpdate(collectionId, { $pull: { members: data } }, { new: true });
+            }
+        }
+
         for (let obj of membersObj) {
             const memberId = obj.member;
             const memberRole = obj.role;
+            console.log("memberRole: ", memberRole);
             const member: IUser | null = await User.findById(memberId);
             if (!member) {
                 return res.status(404).json({ success, error: `User with ID='${memberId}' does not exist` });
@@ -58,7 +69,7 @@ const sendInvite = async (req: Request, res: Response) => {
                 });
             }
 
-            if (invite?.status === "rejected") {
+            if (invite?.status === "rejected" || invite?.status === "accepted") {
                 invite = await Invite.findByIdAndUpdate(invite?._id?.toString(), { status: "pending", role: memberRole }, { new: true });
                 await sendEmail({
                     subject: "Invitation to join a collection",
@@ -69,7 +80,9 @@ const sendInvite = async (req: Request, res: Response) => {
 
         }
 
-        collection = await Collection.findById(collectionId)
+        const collections: ICollection[] = await Collection.find({
+            $or: [{ owner: userId }, { "members.member": userId }],
+        })
             .populate({ path: "owner", select: "-password" })
             .populate({
                 path: "members.member",
@@ -81,7 +94,7 @@ const sendInvite = async (req: Request, res: Response) => {
             });
 
         success = true;
-        return res.status(200).json({ success, collection });
+        return res.status(200).json({ success, collections });
     } catch (error: any) {
         return res.status(500).json({ success, error: error.message });
     }

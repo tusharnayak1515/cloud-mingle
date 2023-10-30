@@ -10,7 +10,7 @@ import { toast } from "react-toastify";
 import { deleteCollection } from "@/apiCalls/collection";
 import { setCollections } from "@/redux/reducers/collectionReducer";
 
-const CollectionsMenu = ({ collection, setRenameFile }: any) => {
+const CollectionsMenu = ({ collection, setRenameFile, setShareCollection }: any) => {
   const router = useRouter();
   const dispatch: any = useDispatch();
   const { profile } = useSelector(
@@ -73,7 +73,7 @@ const CollectionsMenu = ({ collection, setRenameFile }: any) => {
         <p>Open</p>
       </div>
 
-      {(profile?._id === collection?.owner?._id || memberUser?.role === "full-access") && (
+      {profile?._id === collection?.owner?._id && (
         <div
           onClick={onRenameClick}
           className={`w-full p-2 flex justify-start items-center gap-4  hover:bg-dark-secondary cursor-pointer`}
@@ -85,7 +85,7 @@ const CollectionsMenu = ({ collection, setRenameFile }: any) => {
 
       {profile?._id === collection?.owner?._id && (
         <div
-          onClick={() => {}}
+          onClick={() => setShareCollection(collection)}
           className={`w-full p-2 flex justify-start items-center gap-4  hover:bg-dark-secondary cursor-pointer`}
         >
           <BsShareFill className={`text-xl`} />

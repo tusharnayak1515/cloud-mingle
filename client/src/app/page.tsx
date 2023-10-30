@@ -17,6 +17,10 @@ const AddCollectionModal = dynamic(
   () => import("@/components/modals/AddCollectionModal"),
   { ssr: false }
 );
+const ShareCollectionModal = dynamic(
+  () => import("@/components/modals/ShareCollectionModal"),
+  { ssr: false }
+);
 
 const Home = () => {
   const router = useRouter();
@@ -32,6 +36,7 @@ const Home = () => {
   const [isCreateCollection, setIsCreateCollection] = useState(false);
   const [showCollectionMenu, setShowCollectionMenu] = useState(null);
   const [renameFile, setRenameFile] = useState(null);
+  const [shareCollection, setShareCollection] = useState<any>(null);
 
   const fetchMyCollections = async () => {
     setIsLoading(true);
@@ -90,6 +95,8 @@ const Home = () => {
       className={`min-h-[90vh] w-full p-8 text-dark-primary flex flex-col justify-start items-start gap-4`}
     >
       {isLoading && <LoadingSpinner />}
+
+      {shareCollection && <ShareCollectionModal show={shareCollection} setShow={setShareCollection} />}
 
       {isCreateCollection && (
         <AddCollectionModal setShow={setIsCreateCollection} />
@@ -183,6 +190,7 @@ const Home = () => {
                           <CollectionsMenu
                             collection={collection}
                             setRenameFile={setRenameFile}
+                            setShareCollection={setShareCollection}
                           />
                         )}
                     </td>
@@ -191,9 +199,6 @@ const Home = () => {
               })}
             </tbody>
           </table>
-          {/* {collections?.map((collection: any) => {
-            return <Collection key={collection?._id} collection={collection} />;
-          })} */}
         </div>
       )}
     </div>

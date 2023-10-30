@@ -11,7 +11,7 @@ const router = express.Router();
 router.get("/", fetchUser, getAllInvites);
 
 router.post("/:id", [
-    body("membersObj", "Members list cannot be empty").isArray({min: 1})
+    body("membersObj", "Members list cannot be empty").isArray().exists()
 ] , fetchUser, sendInvite);
 
 router.put("/accept/:id", fetchUser, acceptInvite);

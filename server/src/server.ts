@@ -10,6 +10,7 @@ import cookieParser from "cookie-parser";
 import connectToMongo from "./db";
 import otpRoutes from "./routes/otp";
 import authRoutes from "./routes/auth";
+import userRoutes from "./routes/user";
 import collectionRoutes from "./routes/collection";
 import inviteRoutes from "./routes/invite";
 
@@ -36,6 +37,7 @@ import "./models/Invite";
 
 app.use("/api/otp", otpRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/users", userRoutes);
 app.use("/api/collections", collectionRoutes);
 app.use("/api/invites", inviteRoutes);
 

@@ -25,7 +25,7 @@ const RenameFile = dynamic(() => import("@/components/modals/RenameFile"), {
   ssr: false,
 });
 const ShareFileModal = dynamic(
-  () => import("@/components/modals/ShareFileModal"),
+  () => import("@/components/modals/ShareCollectionModal"),
   {
     ssr: false,
   }
@@ -57,7 +57,6 @@ const CollectionDetailsPage = () => {
   const [showMenu, setShowMenu] = useState<string | null>(null);
   const [show, setShow] = useState<File | null>(null);
   const [rename, setRename] = useState<File | null>(null);
-  const [shareFile, setShareFile] = useState<File | null>(null);
 
   const handleFileDrop = (e: React.DragEvent<HTMLInputElement>) => {
     e.preventDefault();
@@ -328,8 +327,6 @@ const CollectionDetailsPage = () => {
           collection={collection}
         />
       )}
-
-      {shareFile && <ShareFileModal show={shareFile} setShow={setShareFile} />}
 
       <UploadFile
         handleFileDrop={handleFileDrop}

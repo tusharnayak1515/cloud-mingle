@@ -14,27 +14,69 @@ const acceptInvite = async (req: Request, res: Response) => {
             return res.status(400).json({ success, error: "Invalid invite" });
         }
 
-        if(invite?.user?.toString() !== userId) {
-            return res.status(401).json({success, error: "You are not allowed to do this"});
+        if (invite?.user?.toString() !== userId) {
+            return res
+                .status(401)
+                .json({ success, error: "You are not allowed to do this" });
         }
 
-        let collection: ICollection | null = await Collection.findById(invite?.targetCollection?.toString());
+        let collection: any = await Collection.findById(
+            invite?.targetCollection?.toString()
+        );
         if (!collection) {
-            return res.status(404).json({ success, error: "Collection does not exist" });
+            return res
+                .status(404)
+                .json({ success, error: "Collection does not exist" });
         }
 
-        if(invite?.status !== "pending") {
-            return res.status(401).json({success, error: "You are not allowed to do this"});
+        if (invite?.status !== "pending") {
+            return res
+                .status(401)
+                .json({ success, error: "You are not allowed to do this" });
         }
 
-        invite = await Invite.findByIdAndUpdate(inviteId, { status: "accepted" }, { new: true });
+        invite = await Invite.findByIdAndUpdate(
+            inviteId,
+            { status: "accepted" },
+            { new: true }
+        );
 
         const data: any = {
             member: userId,
-            role: invite?.role
-        }
+            role: invite?.role,
+        };
 
-        collection = await Collection.findByIdAndUpdate(collection?._id?.toString(), { $push: { members: data } }, { new: true });
+        if (
+            !collection?.members?.find(
+                (item: any) => item?.member?.toString() === userId
+            )
+        ) {
+            collection = await Collection.findByIdAndUpdate(
+                collection?._id?.toString(),
+                { $push: { members: data } },
+                { new: true }
+            );
+        } else {
+            let dataObj:any = null;
+            for(let obj of collection?.members) {
+                if(obj.member.toString() === userId) {
+                    dataObj = {
+                        _id: obj?._id?.toString(),
+                        member: obj.member.toString(),
+                        role: invite?.role
+                    }
+                }
+            }
+            collection = await Collection.findByIdAndUpdate(
+                collection?._id?.toString(),
+                {
+                    members: collection?.members.map((item: any) =>
+                        item?.member?.toString() === userId ? dataObj : item
+                    ),
+                },
+                { new: true }
+            );
+        }
 
         const invites: IInvite[] = await Invite.find({ user: userId })
             .populate({ path: "targetCollection" })
@@ -45,6 +87,6 @@ const acceptInvite = async (req: Request, res: Response) => {
     } catch (error: any) {
         return res.status(500).json({ success, error: error.message });
     }
-}
+};
 
 export default acceptInvite;

@@ -3,8 +3,7 @@
 import Link from "next/link";
 import React from "react";
 import { AiOutlineStar } from "react-icons/ai";
-import { FaFolderOpen } from "react-icons/fa";
-import { MdGridView, MdLogout, MdOutlineShareLocation } from "react-icons/md";
+import { MdGridView, MdOutlineShareLocation, MdNotifications } from "react-icons/md";
 import { RiUserShared2Line } from "react-icons/ri";
 
 const Sidebar = () => {
@@ -50,6 +49,16 @@ const Sidebar = () => {
         >
           <RiUserShared2Line className={`text-xl`} />
           <p>Shared</p>
+        </Link>
+
+        <Link
+          href={`/invites`}
+          className={`w-full p-3 
+          flex justify-start items-center gap-2 rounded-md 
+          cursor-pointer hover:bg-dark-hover bg-transparent`}
+        >
+          <MdNotifications className={`text-xl`} />
+          <p>Invites</p>
         </Link>
       </div>
       
