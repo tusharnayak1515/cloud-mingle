@@ -70,12 +70,13 @@ const sendInvite = async (req: Request, res: Response) => {
             }
 
             if (invite?.status === "rejected" || invite?.status === "accepted") {
-                invite = await Invite.findByIdAndUpdate(invite?._id?.toString(), { status: "pending", role: memberRole }, { new: true });
-                await sendEmail({
-                    subject: "Invitation to join a collection",
-                    text: `You have a new invitation to join a collection. Navigate to invites page to accept or reject it.`,
-                    email: member?.email,
+                let members = collection?.members?.map((item: any) => {
+                    if (item?.member?.toString() === memberId) {
+                        return { _id: item?._id.toString(), member: memberId, role: memberRole };
+                    }
+                    return item;
                 });
+                collection = await Collection.findByIdAndUpdate(collectionId, { members }, { new: true });
             }
 
         }
