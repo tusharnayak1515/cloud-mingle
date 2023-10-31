@@ -1,17 +1,16 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { getAllCollections } from "@/apiCalls/collection";
-import LoadingSpinner from "@/components/LoadingSpinner";
-import { setCollections } from "@/redux/reducers/collectionReducer";
 import { useRouter } from "next/navigation";
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import dynamic from "next/dynamic";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { getAllCollections } from "@/apiCalls/collection";
+import { setCollections } from "@/redux/reducers/collectionReducer";
+import LoadingSpinner from "@/components/LoadingSpinner";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import { formatDate } from "@/utils/util";
 import FolderOptions from "@/components/FolderOptions";
+import { formatDate } from "@/utils/util";
 import CollectionsMenu from "@/components/CollectionsMenu";
-import { MdOutlineDriveFileRenameOutline } from "react-icons/md";
 const AddCollectionModal = dynamic(
   () => import("@/components/modals/AddCollectionModal"),
   { ssr: false }
@@ -24,34 +23,40 @@ const RenameFile = dynamic(() => import("@/components/modals/RenameFile"), {
   ssr: false,
 });
 
-const Home = () => {
+const Shared = () => {
   const router = useRouter();
   const dispatch: any = useDispatch();
-  const { user } = useSelector((state: any) => state.userReducer, shallowEqual);
+  const { user, profile } = useSelector(
+    (state: any) => state.userReducer,
+    shallowEqual
+  );
   const { collections } = useSelector(
     (state: any) => state.collectionReducer,
     shallowEqual
   );
 
   const [isLoading, setIsLoading] = useState(false);
-  const [showFolderMenu, setShowFolderMenu] = useState(false);
-  const [isCreateCollection, setIsCreateCollection] = useState(false);
   const [showCollectionMenu, setShowCollectionMenu] = useState(null);
   const [renameFile, setRenameFile] = useState(null);
   const [shareCollection, setShareCollection] = useState<any>(null);
 
-  const fetchMyCollections = async () => {
+  const fetchCollections = async () => {
     setIsLoading(true);
     try {
       const res: any = await getAllCollections();
       if (res.success) {
-        dispatch(setCollections({ collections: res.collections }));
+        const data = res.collections?.filter(
+          (collection: any) =>
+            collection?.members?.length > 0 &&
+            collection?.owner?._id === profile?._id
+        );
+        dispatch(setCollections({ collections: data }));
         setIsLoading(false);
       }
     } catch (error: any) {
       setIsLoading(false);
       console.log(
-        "Error in fetching my collections in collections page: ",
+        "Error in fetching shared collections in shared page: ",
         error.response.data.error
       );
     }
@@ -60,38 +65,10 @@ const Home = () => {
   useEffect(() => {
     if (!user) {
       router.replace("/signin");
+    } else {
+      fetchCollections();
     }
-    fetchMyCollections();
   }, [user, router]);
-
-  useEffect(() => {
-    const handleDocumentClick = (e: any) => {
-      const menuElement = document.getElementById("menu");
-      const collectionMenu = document.getElementById("collectionMenu");
-      const menuBtn = document.querySelector(".menuBtn");
-
-      if (showFolderMenu && menuElement && !menuElement.contains(e.target)) {
-        setShowFolderMenu(false);
-      }
-
-      if (showFolderMenu && menuBtn?.contains(e.target)) {
-        setShowFolderMenu(false);
-      }
-
-      if (
-        showCollectionMenu !== null &&
-        collectionMenu &&
-        !collectionMenu?.contains(e.target)
-      ) {
-        setShowCollectionMenu(null);
-      }
-    };
-    document.addEventListener("click", handleDocumentClick);
-
-    return () => {
-      document.removeEventListener("click", handleDocumentClick);
-    };
-  }, [showFolderMenu, showCollectionMenu]);
 
   return (
     <div
@@ -106,10 +83,6 @@ const Home = () => {
         />
       )}
 
-      {isCreateCollection && (
-        <AddCollectionModal setShow={setIsCreateCollection} />
-      )}
-
       {renameFile && (
         <RenameFile
           type="collection"
@@ -118,20 +91,10 @@ const Home = () => {
         />
       )}
 
-      <h1 className={`text-2xl font-bold`}>My Collections</h1>
+      <p className={`text-2xl font-bold`}>Shared Collections</p>
 
       {collections?.length === 0 ? (
-        <div className={`flex flex-col justify-start items-start gap-2`}>
-          <p className={`text-lg`}>No collections to show</p>
-          <button
-            onClick={() => setIsCreateCollection(true)}
-            className={`w-full py-3 px-2 flex justify-start items-center gap-4 rounded-md
-            hover:shadow-dark-menuShadow cursor-pointer bg-dark-primary`}
-          >
-            <MdOutlineDriveFileRenameOutline className={`text-xl`} />
-            <p>New</p>
-          </button>
-        </div>
+        <p className={`text-lg`}>No collections to show</p>
       ) : (
         <div className={`w-full my-4 `}>
           <table className={`w-full bg-transparent`}>
@@ -143,16 +106,10 @@ const Home = () => {
                 <th className={`py-3 px-2 text-start`}>Files</th>
                 <th className={`relative py-3 px-2 text-sm text-start`}>
                   <div
-                    onClick={() => setShowFolderMenu(true)}
                     className={`inline-block w-auto p-2 rounded-full cursor-pointer hover:bg-dark-primary transition-all duration-300`}
                   >
                     <BsThreeDotsVertical className={`text-base`} />
                   </div>
-                  {showFolderMenu && (
-                    <FolderOptions
-                      setIsCreateCollection={setIsCreateCollection}
-                    />
-                  )}
                 </th>
               </tr>
             </thead>
@@ -213,4 +170,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Shared;
