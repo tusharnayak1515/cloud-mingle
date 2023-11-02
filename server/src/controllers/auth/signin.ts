@@ -3,7 +3,8 @@ import { validationResult } from "express-validator";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import User from "../../models/User";
-import { IUser } from "../../entities/entityInterfaces";
+import { IStarred, IUser } from "../../entities/entityInterfaces";
+import Starred from "../../models/Starred";
 
 const secret = process.env.JWT_SECRET;
 
@@ -32,6 +33,13 @@ const signin = async (req: Request, res: Response) => {
     }
 
     user = await User.findById(user._id.toString()).select("-password -createdAt -updatedAt").exec();
+
+    let starredCollection:IStarred | null = await Starred.findOne({user: user?._id?.toString()});
+    if(!starredCollection) {
+      await Starred.create({
+        user: user?._id?.toString()
+      });
+    }
 
     const data: any = {
       user: {

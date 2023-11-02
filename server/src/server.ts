@@ -13,6 +13,7 @@ import authRoutes from "./routes/auth";
 import userRoutes from "./routes/user";
 import collectionRoutes from "./routes/collection";
 import inviteRoutes from "./routes/invite";
+import starredRoutes from "./routes/starred";
 
 const app = express();
 const port = process.env.PORT || 9000;
@@ -34,12 +35,14 @@ import "./models/Token";
 import "./models/User";
 import "./models/Collection";
 import "./models/Invite";
+import "./models/Starred";
 
 app.use("/api/otp", otpRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/collections", collectionRoutes);
 app.use("/api/invites", inviteRoutes);
+app.use("/api/starred", starredRoutes);
 
 app.listen(port, () => {
     console.log(`Server started successfully at port ${port}.`);

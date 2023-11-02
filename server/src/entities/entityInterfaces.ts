@@ -37,13 +37,20 @@ export interface ICollection {
     updatedAt?: number;
 }
 
-
 export interface IInvite {
     [x: string]: any;
     targetCollection: Types.ObjectId;
     user: Types.ObjectId;
     role: String;
     status: String;
+    createdAt?: number;
+    updatedAt?: number;
+}
+
+export interface IStarred {
+    [x: string]: any;
+    collections: Types.ObjectId[];
+    user: Types.ObjectId;
     createdAt?: number;
     updatedAt?: number;
 }

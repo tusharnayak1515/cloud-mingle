@@ -10,7 +10,11 @@ import { toast } from "react-toastify";
 import { deleteCollection } from "@/apiCalls/collection";
 import { setCollections } from "@/redux/reducers/collectionReducer";
 
-const CollectionsMenu = ({ collection, setRenameFile, setShareCollection }: any) => {
+const CollectionsMenu = ({
+  collection,
+  setRenameFile,
+  setShareCollection,
+}: any) => {
   const router = useRouter();
   const dispatch: any = useDispatch();
   const { profile } = useSelector(
@@ -38,6 +42,7 @@ const CollectionsMenu = ({ collection, setRenameFile, setShareCollection }: any)
         });
       }
     } catch (error: any) {
+      console.log("error: ",error);
       toast.error(error.response.data.error, {
         position: "top-right",
         autoClose: 3000,
@@ -73,7 +78,7 @@ const CollectionsMenu = ({ collection, setRenameFile, setShareCollection }: any)
         <p>Open</p>
       </div>
 
-      {profile?._id === collection?.owner?._id && (
+      {setRenameFile && profile?._id === collection?.owner?._id && (
         <div
           onClick={onRenameClick}
           className={`w-full p-2 flex justify-start items-center gap-4  hover:bg-dark-secondary cursor-pointer`}
@@ -83,7 +88,7 @@ const CollectionsMenu = ({ collection, setRenameFile, setShareCollection }: any)
         </div>
       )}
 
-      {profile?._id === collection?.owner?._id && (
+      {setShareCollection && profile?._id === collection?.owner?._id && (
         <div
           onClick={() => setShareCollection(collection)}
           className={`w-full p-2 flex justify-start items-center gap-4  hover:bg-dark-secondary cursor-pointer`}

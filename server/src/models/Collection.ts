@@ -1,9 +1,10 @@
 import mongoose, { Document, Schema, Model } from "mongoose";
 import { ICollection } from "../entities/entityInterfaces";
+import Invite from "./Invite";
 
-interface ICollectionDocument extends ICollection, Document {}
+interface ICollectionDocument extends ICollection, Document { }
 
-interface ICollectionModel extends Model<ICollectionDocument> {}
+interface ICollectionModel extends Model<ICollectionDocument> { }
 
 const CollectionSchema = new Schema<ICollectionDocument, ICollectionModel>({
     name: {
@@ -40,6 +41,17 @@ const CollectionSchema = new Schema<ICollectionDocument, ICollectionModel>({
     createdAt: Number,
     updatedAt: Number,
 }, { timestamps: true, versionKey: false });
+
+CollectionSchema.pre("deleteOne", { document: true, query: false }, async function (next) {
+    const collectionId = this.getFilter()._id;
+
+    try {
+        await Invite.deleteMany({ targetCollection: collectionId });
+        next();
+    } catch (error: any) {
+        next(error);
+    }
+});
 
 const Collection = mongoose.model<ICollectionDocument, ICollectionModel>("Collection", CollectionSchema);
 

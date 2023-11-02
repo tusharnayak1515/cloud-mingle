@@ -1,6 +1,8 @@
 "use client";
 
 import { collectionLogout } from "@/redux/reducers/collectionReducer";
+import { invitelogout } from "@/redux/reducers/inviteReducer";
+import { starredlogout } from "@/redux/reducers/starredReducer";
 import { userLogout } from "@/redux/reducers/userReducer";
 import { deleteCookie } from "cookies-next";
 import Image from "next/image";
@@ -18,6 +20,8 @@ const Navbar = () => {
     deleteCookie("authorization");
     dispatch(userLogout());
     dispatch(collectionLogout());
+    dispatch(invitelogout());
+    dispatch(starredlogout());
   }
 
   return (

@@ -15,21 +15,23 @@ import {
   FaFileWord,
 } from "react-icons/fa";
 import { BsCameraVideoFill, BsThreeDotsVertical } from "react-icons/bs";
-import { AiFillFileText, AiFillFileZip } from "react-icons/ai";
-import { formatDate, formatFileSize } from "@/utils/util";
+import {
+  AiFillFileText,
+  AiFillFileZip,
+  AiFillStar,
+  AiOutlineStar,
+} from "react-icons/ai";
+import { formatDate } from "@/utils/util";
 import { toast } from "react-toastify";
+import { getStarredCollections, starCollection } from "@/apiCalls/starred";
+import { setStarredCollection } from "@/redux/reducers/starredReducer";
+import LoadingSpinner from "@/components/LoadingSpinner";
 const OpenFile = dynamic(() => import("@/components/modals/OpenFile"), {
   ssr: false,
 });
 const RenameFile = dynamic(() => import("@/components/modals/RenameFile"), {
   ssr: false,
 });
-const ShareFileModal = dynamic(
-  () => import("@/components/modals/ShareCollectionModal"),
-  {
-    ssr: false,
-  }
-);
 const OptionsMenu = dynamic(() => import("@/components/OptionsMenu"), {
   ssr: false,
 });
@@ -44,12 +46,13 @@ const CollectionDetailsPage = () => {
   const router = useRouter();
   const params = useParams();
   const dispatch: any = useDispatch();
-  const { user } = useSelector(
-    (state: any) => state.userReducer,
-    shallowEqual
-  );
+  const { user } = useSelector((state: any) => state.userReducer, shallowEqual);
   const { collection } = useSelector(
     (state: any) => state.collectionReducer,
+    shallowEqual
+  );
+  const { starredCollection } = useSelector(
+    (state: any) => state.starredReducer,
     shallowEqual
   );
 
@@ -57,6 +60,7 @@ const CollectionDetailsPage = () => {
   const [showMenu, setShowMenu] = useState<string | null>(null);
   const [show, setShow] = useState<File | null>(null);
   const [rename, setRename] = useState<File | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const handleFileDrop = (e: React.DragEvent<HTMLInputElement>) => {
     e.preventDefault();
@@ -72,6 +76,7 @@ const CollectionDetailsPage = () => {
   const onAddFile = async () => {
     if (selectedFile) {
       try {
+        setIsLoading(true);
         const formData = new FormData();
         formData.append("file", selectedFile);
         const res: any = await addFile({ formData, id: collection?._id });
@@ -87,8 +92,10 @@ const CollectionDetailsPage = () => {
             progress: undefined,
           });
           setSelectedFile(null);
+          setIsLoading(false);
         }
       } catch (error: any) {
+        setIsLoading(false);
         toast.error(error.response.data.error, {
           position: "top-right",
           autoClose: 3000,
@@ -100,6 +107,7 @@ const CollectionDetailsPage = () => {
         });
       }
     } else {
+      setIsLoading(false);
       toast.error("No file selected", {
         position: "top-right",
         autoClose: 3000,
@@ -233,9 +241,11 @@ const CollectionDetailsPage = () => {
 
   const onDeleteFile = async (id: string) => {
     try {
+      setIsLoading(true);
       const res: any = await deleteFile({ cid: collection?._id, fid: id });
       if (res.success) {
         dispatch(setCollection({ collection: res.collection }));
+        setIsLoading(false);
         toast.success("File deleted successfully", {
           position: "top-right",
           autoClose: 3000,
@@ -247,6 +257,7 @@ const CollectionDetailsPage = () => {
         });
       }
     } catch (error: any) {
+      setIsLoading(false);
       toast.error(error.response.data.error, {
         position: "top-right",
         autoClose: 3000,
@@ -257,21 +268,65 @@ const CollectionDetailsPage = () => {
         progress: undefined,
       });
     }
-    // setFiles((prev: File[]) => prev.filter((_, id: number) => index !== id));
   };
 
   const fetchCollection = async (id: any) => {
     try {
+      setIsLoading(true);
       const res: any = await getCollectionById(id);
-      console.log("res: ", res);
       if (res.success) {
         dispatch(setCollection({ collection: res.collection }));
+        setIsLoading(false);
       }
     } catch (error: any) {
+      setIsLoading(false);
       console.log(
         "Error in fetching collection, in collection details page: ",
         error.response.data.error
       );
+    }
+  };
+
+  const fetchStarredCollections = async () => {
+    try {
+      setIsLoading(true);
+      const res: any = await getStarredCollections();
+      if (res.success) {
+        dispatch(
+          setStarredCollection({ starredCollection: res.starredCollection })
+        );
+        setIsLoading(false);
+      }
+    } catch (error: any) {
+      setIsLoading(false);
+      console.log(
+        "Error in fetching starred collections, in starred.tsx: ",
+        error
+      );
+    }
+  };
+
+  const onStarCollection = async () => {
+    try {
+      setIsLoading(true);
+      const res: any = await starCollection(collection?._id);
+      if (res.success) {
+        dispatch(
+          setStarredCollection({ starredCollection: res.starredCollection })
+        );
+        setIsLoading(false);
+      }
+    } catch (error: any) {
+      setIsLoading(false);
+      toast.error(error.response.data.error, {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
     }
   };
 
@@ -283,6 +338,9 @@ const CollectionDetailsPage = () => {
     if (!user) {
       router.replace("/signin");
     }
+
+    fetchStarredCollections();
+
     const handleDocumentClick = (e: any) => {
       const menuElement = document.getElementById("menu");
       const previewElement = document.getElementById("preview");
@@ -315,7 +373,24 @@ const CollectionDetailsPage = () => {
     <div
       className={`min-h-[90vh] w-full p-8 text-dark-primary flex flex-col justify-start items-start gap-4`}
     >
-      <h1 className={`text-2xl font-bold`}>{collection?.name}</h1>
+      {isLoading && <LoadingSpinner />}
+
+      <div className={`flex justify-start items-center gap-4`}>
+        <h1 className={`text-2xl font-bold`}>{collection?.name}</h1>
+        {starredCollection?.collections?.some(
+          (item: any) => item?._id === collection?._id
+        ) ? (
+          <AiFillStar
+            onClick={onStarCollection}
+            className={`text-2xl text-dark-primary cursor-pointer`}
+          />
+        ) : (
+          <AiOutlineStar
+            onClick={onStarCollection}
+            className={`text-2xl text-dark-primary cursor-pointer`}
+          />
+        )}
+      </div>
 
       <OpenFile show={show} setShow={setShow} />
 

@@ -9,23 +9,33 @@ import { useDispatch } from "react-redux";
 import Roles from "../Roles";
 import { toast } from "react-toastify";
 import { inviteUsers } from "@/apiCalls/invite";
-import {
-  setCollection,
-  setCollections,
-} from "@/redux/reducers/collectionReducer";
+import { setCollections } from "@/redux/reducers/collectionReducer";
 import LoadingSpinner from "../LoadingSpinner";
 const Modal = dynamic(() => import("./Modal"), { ssr: false });
 
 const ShareCollectionModal = ({ show, setShow }: any) => {
   const dispatch: any = useDispatch();
-
   const [users, setUsers] = useState<any>([]);
+  const [searchedUsers, setSearchedUsers] = useState<any>([]);
   const [members, setMembers] = useState<any>(
     show?.members?.map((item: any) => item?.member?._id)
   );
-
   const [membersObj, setMembersObj] = useState<any>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [searchUser, setSearchUser] = useState<string>("");
+
+  const onSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    setSearchUser(e.target.value);
+
+    setTimeout(() => {
+      const data: any = users?.filter((user: any) =>
+        user?.name?.toLowerCase()?.includes(e.target.value)
+      );
+      console.log("data: ", data);
+      setSearchedUsers(data);
+    }, 1500);
+  };
 
   const fetchAllUsers = async () => {
     try {
@@ -47,10 +57,7 @@ const ShareCollectionModal = ({ show, setShow }: any) => {
   const sendInvite = async () => {
     try {
       setIsLoading(true);
-      console.log("members: ", members);
-      console.log("membersObj: ", membersObj);
       const res: any = await inviteUsers({ id: show?._id, membersObj });
-      console.log("res: ", res);
       if (res.success) {
         dispatch(setCollections({ collections: res.collections }));
         toast.success("Invitation sent successfully", {
@@ -123,6 +130,8 @@ const ShareCollectionModal = ({ show, setShow }: any) => {
                 name="search"
                 id="search"
                 placeholder="Search users..."
+                value={searchUser}
+                onChange={onSearchChange}
                 className={`w-full py-2 px-4 rounded-md outline-none`}
               />
 
@@ -130,21 +139,39 @@ const ShareCollectionModal = ({ show, setShow }: any) => {
                 <p>No users to show</p>
               ) : (
                 <div
-                  className={`w-full my-3 flex flex-col justify-start items-start gap-3`}
+                  className={`h-full w-full my-3 flex flex-col justify-start items-start gap-3 overflow-y-scroll`}
                 >
-                  {users?.map((user: any) => {
-                    return (
-                      <Roles
-                        key={user?._id}
-                        user={user}
-                        members={members}
-                        users={users}
-                        setMembers={setMembers}
-                        membersObj={membersObj}
-                        setMembersObj={setMembersObj}
-                      />
-                    );
-                  })}
+                  {searchUser === "" ? (
+                    users?.map((user: any) => {
+                      return (
+                        <Roles
+                          key={user?._id}
+                          user={user}
+                          members={members}
+                          users={users}
+                          setMembers={setMembers}
+                          membersObj={membersObj}
+                          setMembersObj={setMembersObj}
+                        />
+                      );
+                    })
+                  ) : searchedUsers?.length === 0 ? (
+                    <p>No users to show</p>
+                  ) : (
+                    searchedUsers?.map((user: any) => {
+                      return (
+                        <Roles
+                          key={user?._id}
+                          user={user}
+                          members={members}
+                          users={users}
+                          setMembers={setMembers}
+                          membersObj={membersObj}
+                          setMembersObj={setMembersObj}
+                        />
+                      );
+                    })
+                  )}
                 </div>
               )}
             </div>
