@@ -14,6 +14,7 @@ import CollectionsMenu from "@/components/CollectionsMenu";
 import { MdOutlineDriveFileRenameOutline } from "react-icons/md";
 import { getProfile } from "@/apiCalls/auth";
 import { setProfile } from "@/redux/reducers/userReducer";
+import socket from "@/utils/socket";
 const AddCollectionModal = dynamic(
   () => import("@/components/modals/AddCollectionModal"),
   { ssr: false }
@@ -111,6 +112,17 @@ const Home = () => {
     };
   }, [showFolderMenu, showCollectionMenu]);
 
+  useEffect(() => {
+    socket.on("collections-changed", (data: any) => {
+      console.log("data: ",data);
+      fetchMyCollections();
+    });
+  
+    // return () => {
+    //   socket.off("collection-updated");
+    // };
+  }, [socket]);
+
   return (
     <div
       className={`min-h-[90vh] w-full p-8 text-dark-primary flex flex-col justify-start items-start gap-4`}
@@ -133,6 +145,7 @@ const Home = () => {
           type="collection"
           show={renameFile}
           setShow={setRenameFile}
+          collection={renameFile}
         />
       )}
 

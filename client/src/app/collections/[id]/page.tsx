@@ -26,6 +26,7 @@ import { toast } from "react-toastify";
 import { getStarredCollections, starCollection } from "@/apiCalls/starred";
 import { setStarredCollection } from "@/redux/reducers/starredReducer";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import socket from "@/utils/socket";
 const OpenFile = dynamic(() => import("@/components/modals/OpenFile"), {
   ssr: false,
 });
@@ -81,6 +82,7 @@ const CollectionDetailsPage = () => {
         formData.append("file", selectedFile);
         const res: any = await addFile({ formData, id: collection?._id });
         if (res.success) {
+          socket.emit("collection-updated", collection?._id);
           dispatch(setCollection({ collection: res.collection }));
           toast.success("File uploaded successfully", {
             position: "top-right",
@@ -246,6 +248,7 @@ const CollectionDetailsPage = () => {
       if (res.success) {
         dispatch(setCollection({ collection: res.collection }));
         setIsLoading(false);
+        socket.emit("collection-updated", collection?._id);
         toast.success("File deleted successfully", {
           position: "top-right",
           autoClose: 3000,
@@ -368,6 +371,23 @@ const CollectionDetailsPage = () => {
       document.removeEventListener("click", handleDocumentClick);
     };
   }, [user, showMenu]);
+
+  useEffect(() => {
+    socket.on("collection-changed", (data: any) => {
+      console.log("data: ",data);
+      fetchCollection(data);
+    });
+  
+    return () => {
+      socket.off("collection-updated");
+    };
+  }, [socket]);
+
+  useEffect(()=> {
+    if(collection?._id) {
+      socket.emit("setup", collection?._id);
+    }
+  }, [collection?._id]);
 
   return (
     <div

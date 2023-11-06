@@ -57,9 +57,10 @@ connectToMongo();
 
 import "./models/Token";
 import "./models/User";
-import "./models/Collection";
+import Collection from "./models/Collection";
 import "./models/Invite";
 import "./models/Starred";
+import { ICollection } from "./entities/entityInterfaces";
 
 app.use("/api/otp", otpRoutes);
 app.use("/api/auth", authRoutes);
@@ -68,6 +69,54 @@ app.use("/api/collections", collectionRoutes);
 app.use("/api/invites", inviteRoutes);
 app.use("/api/starred", starredRoutes);
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
     console.log(`Server started successfully at port ${port}.`);
+});
+
+const io = require("socket.io")(server, {
+    pingTimeOut: 60000,
+    cors: {
+        origin: FRONTEND_URL,
+        methods: ['GET', 'POST'],
+        credentials: true,
+    }
+});
+
+let users: any[] = [];
+const userSocketMap = new Map();
+
+function getUserDetails(socketId: any) {
+    console.log(userSocketMap.entries());
+    return userSocketMap.get(socketId);
+}
+
+io.on("connection", (socket: any) => {
+    console.log("Connected to socket.io");
+    socket.on("setup", (collectionId: any) => {
+        console.log("collectionId: ",collectionId);
+        socket.join(collectionId);
+    });
+
+    socket.on("collection-updated", async (collectionId: string | null) => {
+        console.log("collectionId: ",collectionId);
+        const collection: ICollection | null = await Collection.findById(collectionId);
+        if (collection) {
+            io.to(collectionId).emit('collection-changed', collection?._id.toString());
+        }
+        io.emit('collections-changed', collection?._id.toString());
+    });
+
+    socket.on("logout", (collectionId: any) => {
+        socket.leave(collectionId);
+    });
+
+    socket.off("setup", (collectionId: any) => {
+        console.log("socket.off: ", collectionId);
+        socket.leave(collectionId);
+    });
+
+    socket.on("disconnect", () => {
+        const collectionId = getUserDetails(socket.id);
+        socket.leave(collectionId);
+    });
 });
