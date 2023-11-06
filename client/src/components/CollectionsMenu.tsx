@@ -9,6 +9,7 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { deleteCollection } from "@/apiCalls/collection";
 import { setCollections } from "@/redux/reducers/collectionReducer";
+import socket from "@/utils/socket";
 
 const CollectionsMenu = ({
   collection,
@@ -31,6 +32,7 @@ const CollectionsMenu = ({
       const res: any = await deleteCollection(collection?._id);
       if (res.success) {
         dispatch(setCollections({ collections: res.collections }));
+        socket.emit("collection-updated", collection?._id);
         toast.success("Collection deleted successfully", {
           position: "top-right",
           autoClose: 3000,

@@ -23,8 +23,6 @@ const UploadFile = ({
     (item: any) => item?.member?._id === profile?._id
   );
 
-  console.log("memberUser: ",memberUser);
-
   return (
     <>
       {(collection?.owner?._id === profile?._id ||

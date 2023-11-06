@@ -334,16 +334,15 @@ const CollectionDetailsPage = () => {
   };
 
   useEffect(() => {
-    fetchCollection(params.id);
-  }, [params.id]);
-
-  useEffect(() => {
     if (!user) {
       router.replace("/signin");
+    } else {
+      fetchStarredCollections();
+      fetchCollection(params.id);
     }
+  }, [user, router, params.id]);
 
-    fetchStarredCollections();
-
+  useEffect(() => {
     const handleDocumentClick = (e: any) => {
       const menuElement = document.getElementById("menu");
       const previewElement = document.getElementById("preview");
@@ -370,21 +369,20 @@ const CollectionDetailsPage = () => {
     return () => {
       document.removeEventListener("click", handleDocumentClick);
     };
-  }, [user, showMenu]);
+  }, [showMenu]);
 
   useEffect(() => {
     socket.on("collection-changed", (data: any) => {
-      console.log("data: ",data);
       fetchCollection(data);
     });
-  
+
     return () => {
       socket.off("collection-updated");
     };
   }, [socket]);
 
-  useEffect(()=> {
-    if(collection?._id) {
+  useEffect(() => {
+    if (collection?._id) {
       socket.emit("setup", collection?._id);
     }
   }, [collection?._id]);

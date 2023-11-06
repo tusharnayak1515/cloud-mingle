@@ -13,7 +13,6 @@ type propType = {
 };
 
 const OpenFile = ({ show, setShow }: propType) => {
-  console.log("file: ", show);
 
   const ImagePreview = () => {
     const buffer: Buffer = Buffer.from(show?.data?.data, "base64url");

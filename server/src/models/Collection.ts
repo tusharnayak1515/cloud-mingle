@@ -1,6 +1,7 @@
 import mongoose, { Document, Schema, Model } from "mongoose";
 import { ICollection } from "../entities/entityInterfaces";
 import Invite from "./Invite";
+import Starred from "./Starred";
 
 interface ICollectionDocument extends ICollection, Document { }
 
@@ -47,6 +48,7 @@ CollectionSchema.pre("deleteOne", { document: true, query: false }, async functi
 
     try {
         await Invite.deleteMany({ targetCollection: collectionId });
+        await Starred.updateMany({ $pull: { collections: collectionId } });
         next();
     } catch (error: any) {
         next(error);
