@@ -12,6 +12,8 @@ import { formatDate } from "@/utils/util";
 import FolderOptions from "@/components/FolderOptions";
 import CollectionsMenu from "@/components/CollectionsMenu";
 import { MdOutlineDriveFileRenameOutline } from "react-icons/md";
+import { getProfile } from "@/apiCalls/auth";
+import { setProfile } from "@/redux/reducers/userReducer";
 const AddCollectionModal = dynamic(
   () => import("@/components/modals/AddCollectionModal"),
   { ssr: false }
@@ -57,11 +59,27 @@ const Home = () => {
     }
   };
 
+  const fetchProfile = async () => {
+    try {
+      const res: any = await getProfile();
+      if (res.success) {
+        localStorage.setItem("user_data", JSON.stringify(res.user));
+        dispatch(setProfile({ user: res.user }));
+      }
+    } catch (error: any) {
+      console.log(
+        "Error in fetching profile, in root layout: ",
+        error.response.data.error
+      );
+    }
+  };
+
   useEffect(() => {
     if (!user) {
       router.replace("/signin");
     }
     fetchMyCollections();
+    fetchProfile();
   }, [user, router]);
 
   useEffect(() => {

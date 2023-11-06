@@ -4,8 +4,8 @@ dotenv.config({ path: path.resolve(__dirname, "../.env") });
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-// import session from "express-session";
-// import connectMongo from 'connect-mongodb-session';
+import session from "express-session";
+import connectMongo from 'connect-mongodb-session';
 
 import connectToMongo from "./db";
 import otpRoutes from "./routes/otp";
@@ -16,18 +16,42 @@ import inviteRoutes from "./routes/invite";
 import starredRoutes from "./routes/starred";
 
 const app = express();
+const MongoDBStore = connectMongo(session);
 const port = process.env.PORT || 9000;
 
 const FRONTEND_URL = process.env.NODE_ENV === "development" ? "http://localhost:3000" : "";
+
+const store = new MongoDBStore({
+    uri: process.env.MONGO_URI || "mongodb://0.0.0.0:27017/cloudmingle?retryWrites=true&w=majority",
+    collection: 'sessions',
+});
+
+store.on('error', (error) => {
+    console.error('MongoDB session store error:', error);
+});
 
 app.use(cors({
     origin: FRONTEND_URL,
     credentials: true,
 }));
 
+app.use(
+    session({
+        secret: "expenso",
+        resave: false,
+        saveUninitialized: true,
+        store: store,
+        cookie: {
+            maxAge: 24 * 60 * 60 * 1000,
+        },
+    })
+);
+
 app.use(cookieParser());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
+
+import "./passport";
 
 connectToMongo();
 
