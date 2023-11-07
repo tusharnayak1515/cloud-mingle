@@ -81,7 +81,7 @@ const AddCollectionModal = ({ setShow }: any) => {
               type="text"
               name="name"
               id="name"
-              placeholder="File name"
+              placeholder="Collection name"
               value={name}
               onChange={onChangeHandler}
               className={`w-full py-2 px-4 bg-dark-primary rounded-md outline-none`}

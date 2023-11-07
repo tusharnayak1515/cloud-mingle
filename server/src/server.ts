@@ -56,11 +56,11 @@ import "./passport";
 connectToMongo();
 
 import "./models/Token";
-import "./models/User";
+import User from "./models/User";
 import Collection from "./models/Collection";
 import "./models/Invite";
 import "./models/Starred";
-import { ICollection } from "./entities/entityInterfaces";
+import { ICollection, IUser } from "./entities/entityInterfaces";
 
 app.use("/api/otp", otpRoutes);
 app.use("/api/auth", authRoutes);
@@ -92,18 +92,39 @@ function getUserDetails(socketId: any) {
 
 io.on("connection", (socket: any) => {
     console.log("Connected to socket.io");
-    socket.on("setup", (collectionId: any) => {
-        console.log("collectionId: ",collectionId);
-        socket.join(collectionId);
+    socket.on("setup", ({ userId, collectionId }: any) => {
+        console.log("userId: ", userId);
+        console.log("collectionId: ", collectionId);
+        if (userId) {
+            socket.join(userId);
+        }
+        if (collectionId) {
+            socket.join(collectionId);
+        }
     });
 
-    socket.on("collection-updated", async (collectionId: string | null) => {
-        console.log("collectionId: ",collectionId);
+    socket.on("collection-updated", async ({ userId, collectionId }: any) => {
+        console.log("userId: ", userId);
+        console.log("collectionId: ", collectionId);
+        const user: IUser | null = await User.findById(userId);
         const collection: ICollection | null = await Collection.findById(collectionId);
         if (collection) {
-            io.to(collectionId).emit('collection-changed', collection?._id.toString());
+            io.to(collectionId).emit('collection-changed', { collectionId: collection?._id.toString(), userId });
+        }
+        else if (user) {
+            io.to(userId).emit('collection-changed', { userId: user?._id.toString(), collectionId: null });
         }
         io.emit('collections-changed', collection?._id.toString());
+    });
+
+    socket.on("invite-sent", async ({ userId, collectionId }: any) => {
+        console.log("userId: ", userId);
+        console.log("collectionId: ", collectionId);
+        const user: IUser | null = await User.findById(userId);
+        const collection: ICollection | null = await Collection.findById(collectionId);
+        if (user && collection) {
+            io.to(userId).emit('invite-received', collection?._id?.toString());
+        }
     });
 
     socket.on("logout", (collectionId: any) => {

@@ -47,7 +47,7 @@ const CollectionDetailsPage = () => {
   const router = useRouter();
   const params = useParams();
   const dispatch: any = useDispatch();
-  const { user } = useSelector((state: any) => state.userReducer, shallowEqual);
+  const { user, profile } = useSelector((state: any) => state.userReducer, shallowEqual);
   const { collection } = useSelector(
     (state: any) => state.collectionReducer,
     shallowEqual
@@ -82,7 +82,7 @@ const CollectionDetailsPage = () => {
         formData.append("file", selectedFile);
         const res: any = await addFile({ formData, id: collection?._id });
         if (res.success) {
-          socket.emit("collection-updated", collection?._id);
+          socket.emit("collection-updated", {collectionId: collection?._id, userId: profile?._id});
           dispatch(setCollection({ collection: res.collection }));
           toast.success("File uploaded successfully", {
             position: "top-right",
@@ -248,7 +248,7 @@ const CollectionDetailsPage = () => {
       if (res.success) {
         dispatch(setCollection({ collection: res.collection }));
         setIsLoading(false);
-        socket.emit("collection-updated", collection?._id);
+        socket.emit("collection-updated", {collectionId: collection?._id, userId: profile?._id});
         toast.success("File deleted successfully", {
           position: "top-right",
           autoClose: 3000,
@@ -373,17 +373,19 @@ const CollectionDetailsPage = () => {
 
   useEffect(() => {
     socket.on("collection-changed", (data: any) => {
-      fetchCollection(data);
+      if(data.userId !== profile?._id) {
+        fetchCollection(data.collectionId);
+      }
     });
 
-    return () => {
-      socket.off("collection-updated");
-    };
+    // return () => {
+    //   socket.off("collection-changed");
+    // };
   }, [socket]);
 
   useEffect(() => {
     if (collection?._id) {
-      socket.emit("setup", collection?._id);
+      socket.emit("setup", {collectionId: collection?._id, userId: profile?._id});
     }
   }, [collection?._id]);
 

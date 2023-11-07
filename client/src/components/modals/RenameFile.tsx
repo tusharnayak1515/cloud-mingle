@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 import ReactDom from "react-dom";
 import { toast } from "react-toastify";
 import { renameCollection, renameFile } from "@/apiCalls/collection";
-import { useDispatch } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { setCollection, setCollections } from "@/redux/reducers/collectionReducer";
 import socket from "@/utils/socket";
 
@@ -23,6 +23,7 @@ const RenameFile = ({ type, show, setShow, collection }: propType) => {
   console.log("show: ", show);
   console.log("collection: ", collection);
   const dispatch: any = useDispatch();
+  const {profile} = useSelector((state:any)=> state.userReducer,shallowEqual);
   const [fileName, setFileName] = useState(
     type === "collection"
       ? show
@@ -58,7 +59,7 @@ const RenameFile = ({ type, show, setShow, collection }: propType) => {
         });
         if (res.success) {
           dispatch(setCollection({ collection: res.collection }));
-          socket.emit("collection-updated", collection?._id);
+          socket.emit("collection-updated", {collectionId: collection?._id, userId: profile?._id});
           toast.success("File renamed successfully", {
             position: "top-right",
             autoClose: 3000,
@@ -94,7 +95,7 @@ const RenameFile = ({ type, show, setShow, collection }: propType) => {
         });
         if (res.success) {
           dispatch(setCollections({ collections: res.collections }));
-          socket.emit("collection-updated", collection?._id);
+          socket.emit("collection-updated", {collectionId: collection?._id, userId: profile?._id});
           toast.success("Collection renamed successfully", {
             position: "top-right",
             autoClose: 3000,

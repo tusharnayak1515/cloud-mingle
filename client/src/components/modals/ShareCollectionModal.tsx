@@ -11,6 +11,7 @@ import { toast } from "react-toastify";
 import { inviteUsers } from "@/apiCalls/invite";
 import { setCollections } from "@/redux/reducers/collectionReducer";
 import LoadingSpinner from "../LoadingSpinner";
+import socket from "@/utils/socket";
 const Modal = dynamic(() => import("./Modal"), { ssr: false });
 
 const ShareCollectionModal = ({ show, setShow }: any) => {
@@ -60,6 +61,9 @@ const ShareCollectionModal = ({ show, setShow }: any) => {
       const res: any = await inviteUsers({ id: show?._id, membersObj });
       if (res.success) {
         dispatch(setCollections({ collections: res.collections }));
+        membersObj.forEach((item:any)=> {
+          socket.emit("invite-sent", {userId: item?.member, collectionId: show?._id});
+        });
         toast.success("Invitation sent successfully", {
           position: "top-right",
           autoClose: 3000,

@@ -23,16 +23,12 @@ const CollectionsMenu = ({
     shallowEqual
   );
 
-  const memberUser = collection?.members?.find(
-    (item: any) => item?.member?._id === profile?._id
-  );
-
   const onDeleteClick = async () => {
     try {
       const res: any = await deleteCollection(collection?._id);
       if (res.success) {
         dispatch(setCollections({ collections: res.collections }));
-        socket.emit("collection-updated", collection?._id);
+        socket.emit("collection-updated", {collectionId: collection?._id, userId: profile?._id});
         toast.success("Collection deleted successfully", {
           position: "top-right",
           autoClose: 3000,

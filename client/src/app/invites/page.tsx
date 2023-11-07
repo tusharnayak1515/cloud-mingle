@@ -8,11 +8,12 @@ import { setInvites } from "@/redux/reducers/inviteReducer";
 import { toast } from "react-toastify";
 import { AiOutlineCheck } from "react-icons/ai";
 import { RxCross2 } from "react-icons/rx";
+import socket from "@/utils/socket";
 
 const InvitePage = () => {
   const router = useRouter();
   const dispatch: any = useDispatch();
-  const { user } = useSelector((state: any) => state.userReducer, shallowEqual);
+  const { user, profile } = useSelector((state: any) => state.userReducer, shallowEqual);
   const { invites } = useSelector(
     (state: any) => state.inviteReducer,
     shallowEqual
@@ -96,6 +97,18 @@ const InvitePage = () => {
     }
   }, [user, router]);
 
+  useEffect(() => {
+    socket.on("invite-received", (data: any) => {
+      if (data) {
+        fetchAllInvites();
+      }
+    });
+  }, [socket]);
+
+  useEffect(()=> {
+    socket.emit("setup", {collectionId: null, userId: profile?._id});
+  }, []);
+
   return (
     <div
       className={`min-h-[90vh] w-full p-8 text-dark-primary flex flex-col justify-start items-start gap-4`}
@@ -145,7 +158,7 @@ const InvitePage = () => {
                     {invite?.status}
                   </td>
                   <td className={`py-3 px-2 text-sm text-start font-[500]`}>
-                    <button disabled={invite?.status !== "pending"}>
+                    <button disabled={invite?.status !== "pending"} onClick={()=> onAccept(invite?._id)}>
                       <AiOutlineCheck
                         className={`text-xl ${
                           invite?.status !== "pending"
@@ -156,7 +169,7 @@ const InvitePage = () => {
                     </button>
                   </td>
                   <td className={`py-3 px-2 text-sm text-start font-[500]`}>
-                    <button disabled={invite?.status !== "pending"}>
+                    <button disabled={invite?.status !== "pending"} onClick={()=> onReject(invite?._id)}>
                       <RxCross2
                         className={`text-xl ${
                           invite?.status !== "pending"
