@@ -125,7 +125,7 @@ const Signin = () => {
 
       <form
         onSubmit={onSignin}
-        className={`h-auto w-[400px] my-[7rem] p-4 text-dark-primary
+        className={`h-auto w-[90%] xxxs:w-[400px] my-[7rem] p-4 text-dark-primary
       flex flex-col justify-start items-center gap-4 shadow-dark-menuShadow
       rounded-md bg-dark-secondary`}
       >

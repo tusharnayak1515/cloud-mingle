@@ -12,7 +12,7 @@ const UserDetails = ({ profile }: any) => {
         <Image src={profile?.dp} alt="User dp" fill className={`rounded-full`} />
       </div>
 
-      <h1 className={`text-2xl font-bold`}>{profile?.name}</h1>
+      <h1 className={`text-xl xs:text-2xl font-bold`}>{profile?.name}</h1>
     </>
   );
 };

@@ -32,8 +32,8 @@ const UploadFile = ({
           <div
             onDrop={handleFileDrop}
             onDragOver={(e) => e.preventDefault()}
-            className={`h-[200px] w-[350px] flex justify-center items-center
-      border-2 border-dashed border-dark-primary rounded-md self-center`}
+            className={`h-[150px] xxxs:h-[200px] w-[300px] xxxs:w-[350px] flex justify-center items-center
+            border-2 border-dashed border-dark-primary rounded-md self-center`}
           >
             <label
               htmlFor="file"

@@ -179,7 +179,7 @@ const Signup = () => {
       className={`min-h-[100vh] w-full flex flex-col justify-start items-center bg-dark-primary`}
     >
       <form
-        className={`h-auto w-[400px] my-[6rem] p-4 text-dark-primary
+        className={`h-auto w-[90%] xxxs:w-[400px] my-[6rem] p-4 text-dark-primary
       flex flex-col justify-start items-center gap-4 shadow-dark-menuShadow
       rounded-md bg-dark-secondary`}
         onSubmit={otpSent ? onRegister : onOtpSend}

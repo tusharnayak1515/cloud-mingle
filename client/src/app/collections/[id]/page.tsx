@@ -47,7 +47,10 @@ const CollectionDetailsPage = () => {
   const router = useRouter();
   const params = useParams();
   const dispatch: any = useDispatch();
-  const { user, profile } = useSelector((state: any) => state.userReducer, shallowEqual);
+  const { user, profile } = useSelector(
+    (state: any) => state.userReducer,
+    shallowEqual
+  );
   const { collection } = useSelector(
     (state: any) => state.collectionReducer,
     shallowEqual
@@ -82,7 +85,10 @@ const CollectionDetailsPage = () => {
         formData.append("file", selectedFile);
         const res: any = await addFile({ formData, id: collection?._id });
         if (res.success) {
-          socket.emit("collection-updated", {collectionId: collection?._id, userId: profile?._id});
+          socket.emit("collection-updated", {
+            collectionId: collection?._id,
+            userId: profile?._id,
+          });
           dispatch(setCollection({ collection: res.collection }));
           toast.success("File uploaded successfully", {
             position: "top-right",
@@ -248,7 +254,10 @@ const CollectionDetailsPage = () => {
       if (res.success) {
         dispatch(setCollection({ collection: res.collection }));
         setIsLoading(false);
-        socket.emit("collection-updated", {collectionId: collection?._id, userId: profile?._id});
+        socket.emit("collection-updated", {
+          collectionId: collection?._id,
+          userId: profile?._id,
+        });
         toast.success("File deleted successfully", {
           position: "top-right",
           autoClose: 3000,
@@ -373,7 +382,7 @@ const CollectionDetailsPage = () => {
 
   useEffect(() => {
     socket.on("collection-changed", (data: any) => {
-      if(data.userId !== profile?._id) {
+      if (data.userId !== profile?._id) {
         fetchCollection(data.collectionId);
       }
     });
@@ -385,7 +394,10 @@ const CollectionDetailsPage = () => {
 
   useEffect(() => {
     if (collection?._id) {
-      socket.emit("setup", {collectionId: collection?._id, userId: profile?._id});
+      socket.emit("setup", {
+        collectionId: collection?._id,
+        userId: profile?._id,
+      });
     }
   }, [collection?._id]);
 
@@ -438,71 +450,81 @@ const CollectionDetailsPage = () => {
           <div
             className={`w-[60% flex flex-col justify-start items-center gap-4`}
           >
-            <table className={`w-full bg-transparent`}>
-              <thead>
-                <tr>
-                  <th className={`py-3 px-2 text-start`}>Name</th>
-                  <th className={`py-3 px-2 text-start`}>Owner</th>
-                  <th className={`py-3 px-2 text-start`}>Last Modified</th>
-                  <th className={`py-3 px-2 text-sm text-start`}>
-                    <div
-                      className={`inline-block w-auto p-2 rounded-full cursor-pointer hover:bg-dark-primary transition-all duration-300`}
-                    >
-                      <BsThreeDotsVertical className={`text-base`} />
-                    </div>
-                  </th>
-                </tr>
-              </thead>
+            <div className="w-full my-4 overflow-x-scroll md_link:overflow-x-clip sm:max-w-full">
+              <table
+                className={`h-full w-[600px] sm:w-full overflow-x-clip bg-transparent`}
+              >
+                <thead>
+                  <tr>
+                    <th className={`py-3 px-2 text-start`}>Name</th>
+                    <th className={`py-3 px-2 text-start`}>Owner</th>
+                    <th className={`py-3 px-2 text-start`}>Last Modified</th>
+                    <th className={`py-3 px-2 text-sm text-start`}>
+                      <div
+                        className={`inline-block w-auto p-2 rounded-full cursor-pointer hover:bg-dark-primary transition-all duration-300`}
+                      >
+                        <BsThreeDotsVertical className={`text-base`} />
+                      </div>
+                    </th>
+                  </tr>
+                </thead>
 
-              <tbody>
-                {collection?.files?.map((file: any) => {
-                  return (
-                    <tr
-                      key={file?._id}
-                      className={`border-t border-dark-primary transition-all duration-300`}
-                    >
-                      <td className={`py-3 px-2 text-sm text-start font-[500]`}>
-                        <div
-                          className={`flex justify-start items-center gap-4`}
+                <tbody>
+                  {collection?.files?.map((file: any) => {
+                    return (
+                      <tr
+                        key={file?._id}
+                        className={`border-t border-dark-primary transition-all duration-300`}
+                      >
+                        <td
+                          className={`py-3 px-2 text-sm text-start font-[500]`}
                         >
-                          {previewFile(file, true)}
-                          <p>
-                            {file?.filename?.length > 25
-                              ? `${file?.filename?.substring(0, 25)}...`
-                              : file?.filename}
-                          </p>
-                        </div>
-                      </td>
-                      <td className={`py-3 px-2 text-sm text-start font-[500]`}>
-                        {file?.addedBy?.name}
-                      </td>
-                      <td className={`py-3 px-2 text-sm text-start font-[500]`}>
-                        {formatDate(collection?.updatedAt)}
-                      </td>
-                      <td className={`relative py-3 px-2 text-sm text-start`}>
-                        <div
-                          onClick={() => {
-                            onMenuClick(file?._id);
-                          }}
-                          className={`menuBtn inline-block w-auto p-2 rounded-full cursor-pointer hover:bg-dark-primary transition-all duration-300`}
+                          <div
+                            className={`flex justify-start items-center gap-4`}
+                          >
+                            {previewFile(file, true)}
+                            <p>
+                              {file?.filename?.length > 25
+                                ? `${file?.filename?.substring(0, 25)}...`
+                                : file?.filename}
+                            </p>
+                          </div>
+                        </td>
+                        <td
+                          className={`py-3 px-2 text-sm text-start font-[500]`}
                         >
-                          <BsThreeDotsVertical className={`text-base`} />
-                        </div>
-                        {showMenu === file?._id && (
-                          <OptionsMenu
-                            onDeleteFile={onDeleteFile}
-                            file={file}
-                            setShowMenu={setShowMenu}
-                            setShow={setShow}
-                            setRename={setRename}
-                          />
-                        )}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+                          {file?.addedBy?.name}
+                        </td>
+                        <td
+                          className={`py-3 px-2 text-sm text-start font-[500]`}
+                        >
+                          {formatDate(collection?.updatedAt)}
+                        </td>
+                        <td className={`relative py-3 px-2 text-sm text-start`}>
+                          <div
+                            onClick={() => {
+                              onMenuClick(file?._id);
+                            }}
+                            className={`menuBtn inline-block w-auto p-2 rounded-full cursor-pointer hover:bg-dark-primary transition-all duration-300`}
+                          >
+                            <BsThreeDotsVertical className={`text-base`} />
+                          </div>
+                          {showMenu === file?._id && (
+                            <OptionsMenu
+                              onDeleteFile={onDeleteFile}
+                              file={file}
+                              setShowMenu={setShowMenu}
+                              setShow={setShow}
+                              setRename={setRename}
+                            />
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
           </div>
         )}
       </div>

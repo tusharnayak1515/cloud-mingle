@@ -82,7 +82,7 @@ const StarredPage = () => {
         <div className={`relative w-full`}>
           <div className="w-full my-4 overflow-x-auto md_link:overflow-x-clip sm:max-w-full">
             <table
-              className={`h-full w-[500px] xs:w-full bg-transparent`}
+              className={`h-full w-[600px] sm:w-full bg-transparent`}
             >
               <thead>
                 <tr>

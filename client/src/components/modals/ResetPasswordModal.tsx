@@ -145,7 +145,7 @@ const ResetPasswordModal = ({ setIsResetPassword }: any) => {
   };
 
   return ReactDom.createPortal(
-    <div className={`fixed inset-0 p-6 bg-[#0000005f] z-[600]`}>
+    <div className={`fixed inset-0 p-6 bg-[#0000003a] z-[600]`}>
       {loading && <LoadingSpinner />}
       <form
         className={`h-auto w-[100%] xxs:w-[350px] xs:w-[400px] md:w-[450px] overflow-y-scroll

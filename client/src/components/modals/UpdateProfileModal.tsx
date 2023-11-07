@@ -134,9 +134,9 @@ const UpdateProfileModal = ({ setIsUpdateProfile, setIsLoading }: any) => {
       <Modal>
         <form
           onSubmit={onSubmitHandler}
-          className={`w-[500px] my-8 mx-auto p-6 text-dark-primary 
+          className={`w-[90%] xxxs:w-[400px] sm:w-[500px] my-8 mx-auto p-6 text-dark-primary 
           flex flex-col justify-start items-center gap-4 
-          rounded-md bg-dark-secondary`}
+          rounded-md bg-dark-secondary shadow-dark-menuShadow`}
         >
           <p className={`text-2xl text-dark-primary font-bold`}>
             Update Profile

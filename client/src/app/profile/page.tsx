@@ -79,7 +79,7 @@ const ProfilePage = () => {
 
       <button
         onClick={() => setIsUpdateProfile(true)}
-        className={`py-2 px-4 text-dark-secondary 
+        className={`py-2 px-4 text-sm xs:text-base text-dark-secondary 
         border-dark-primary rounded-md bg-dark-primary-btn 
         hover:bg-dark-secondary-btn transition-all duration-300`}
       >
@@ -88,7 +88,7 @@ const ProfilePage = () => {
 
       <button
         onClick={() => setIsChangePassword(true)}
-        className={`py-2 px-4 text-dark-secondary 
+        className={`py-2 px-4 text-sm xs:text-base text-dark-secondary 
         border-dark-primary rounded-md bg-dark-primary-btn 
         hover:bg-dark-secondary-btn transition-all duration-300`}
       >
