@@ -65,13 +65,13 @@ const AddCollectionModal = ({ setShow }: any) => {
 
   return ReactDom.createPortal(
     <Modal>
-      <div id="preview" className={`h-[220px] w-[30%] mx-auto `}>
+      <div id="preview" className={`h-[220px] w-[80%] xs:w-[350px] xl:w-[30%] mx-auto rounded-md shadow-dark-menuShadow`}>
         <form
-          className={`h-full w-full my-[20%] 
+          className={`h-full w-full my-20
             text-dark-primary p-4 flex flex-col justify-start items-center gap-4 rounded-md overflow-hidden bg-dark-secondary`}
           onSubmit={onAddCollection}
         >
-          <p className={`text-2xl font-bold`}>Add Collection</p>
+          <p className={`text-xl xs:text-2xl font-bold`}>Add Collection</p>
 
           <div
             className={`w-full flex flex-col justify-start items-start gap-[0.2rem]`}

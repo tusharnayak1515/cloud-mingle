@@ -5,7 +5,7 @@ const Modal = ({ children, className }: any) => {
     <div
       className={
         className ||
-        `fixed inset-0 z-[500] bg-[#0000006f] transition-all duration-300`
+        `fixed inset-0 z-[500] bg-[#0000003a] transition-all duration-300`
       }
     >
       {children}

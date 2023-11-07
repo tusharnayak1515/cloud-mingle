@@ -61,8 +61,11 @@ const ShareCollectionModal = ({ show, setShow }: any) => {
       const res: any = await inviteUsers({ id: show?._id, membersObj });
       if (res.success) {
         dispatch(setCollections({ collections: res.collections }));
-        membersObj.forEach((item:any)=> {
-          socket.emit("invite-sent", {userId: item?.member, collectionId: show?._id});
+        membersObj.forEach((item: any) => {
+          socket.emit("invite-sent", {
+            userId: item?.member,
+            collectionId: show?._id,
+          });
         });
         toast.success("Invitation sent successfully", {
           position: "top-right",
@@ -110,7 +113,10 @@ const ShareCollectionModal = ({ show, setShow }: any) => {
     <>
       {isLoading && <LoadingSpinner />}
       <Modal>
-        <div id="preview" className={`h-[500px] w-[40%] mx-auto`}>
+        <div
+          id="preview"
+          className={`h-[500px] w-[90%] xs:w-[80%] sm:w-[450px] md_link:w-[500px] mx-auto rounded-md shadow-dark-menuShadow`}
+        >
           <div
             className={`relative h-full w-full my-[10%] 
           text-dark-primary p-4 flex flex-col justify-start items-center gap-4 
@@ -187,10 +193,14 @@ const ShareCollectionModal = ({ show, setShow }: any) => {
             >
               Submit
             </button>
-            <AiOutlineClose
+            <button
+              type="button"
               onClick={() => setShow(null)}
-              className={`absolute left-[101%] top-[2%] text-3xl text-dark-primary cursor-pointer`}
-            />
+              className={`w-full py-2 px-4 border border-dark-primary rounded-md 
+                hover:bg-dark-primary transition-all duration-300 bg-transparent`}
+            >
+              Cancel
+            </button>
           </div>
         </div>
       </Modal>

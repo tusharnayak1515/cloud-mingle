@@ -11,7 +11,7 @@ const FolderOptions = ({ setIsCreateCollection }: any) => {
   return (
     <div
       id="menu"
-      className={`absolute bottom-[50px]
+      className={`absolute top-[-20px] right-[20px]
   h-auto w-[100px] flex flex-col justify-start items-start 
   rounded-md overflow-hidden bg-dark-primary shadow-dark-menuShadow z-[200]`}
     >

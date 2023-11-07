@@ -9,7 +9,7 @@ import { RiUserShared2Line } from "react-icons/ri";
 const Sidebar = () => {
   return (
     <div
-      className={`h-full col-span-2 p-4 text-dark-primary flex flex-col justify-start items-start gap-4 bg-dark-primary`}
+      className={`h-full md_link:col-span-3 xl:col-span-2 p-4 text-dark-primary hidden md_link:flex flex-col justify-start items-start gap-4 bg-dark-primary`}
     >
       <div
         className={`w-full flex justify-start items-center cursor-pointer gap-2`}

@@ -114,19 +114,17 @@ const Home = () => {
 
   useEffect(() => {
     socket.on("collections-changed", (data: any) => {
-      console.log("data: ",data);
+      console.log("data: ", data);
       fetchMyCollections();
     });
-  
+
     // return () => {
     //   socket.off("collection-updated");
     // };
   }, [socket]);
 
   return (
-    <div
-      className={`min-h-[90vh] w-full p-8 text-dark-primary flex flex-col justify-start items-start gap-4`}
-    >
+    <>
       {isLoading && <LoadingSpinner />}
 
       {shareCollection && (
@@ -148,99 +146,104 @@ const Home = () => {
           collection={renameFile}
         />
       )}
+      <div
+        className={`min-h-[90vh] w-full p-8 text-dark-primary flex flex-col justify-start items-start gap-4`}
+      >
+        <h1 className={`text-2xl font-bold`}>My Collections</h1>
 
-      <h1 className={`text-2xl font-bold`}>My Collections</h1>
-
-      {collections?.length === 0 ? (
-        <div className={`flex flex-col justify-start items-start gap-2`}>
-          <p className={`text-lg`}>No collections to show</p>
-          <button
-            onClick={() => setIsCreateCollection(true)}
-            className={`w-full py-3 px-2 flex justify-start items-center gap-4 rounded-md
+        {collections?.length === 0 ? (
+          <div className={`flex flex-col justify-start items-start gap-2`}>
+            <p className={`text-lg`}>No collections to show</p>
+            <button
+              onClick={() => setIsCreateCollection(true)}
+              className={`w-full py-3 px-2 flex justify-start items-center gap-4 rounded-md
             hover:shadow-dark-menuShadow cursor-pointer bg-dark-primary`}
-          >
-            <MdOutlineDriveFileRenameOutline className={`text-xl`} />
-            <p>New</p>
-          </button>
-        </div>
-      ) : (
-        <div className={`w-full my-4 `}>
-          <table className={`w-full bg-transparent`}>
-            <thead>
-              <tr>
-                <th className={`py-3 px-2 text-start`}>Name</th>
-                <th className={`py-3 px-2 text-start`}>Owner</th>
-                <th className={`py-3 px-2 text-start`}>Last Modified</th>
-                <th className={`py-3 px-2 text-start`}>Files</th>
-                <th className={`relative py-3 px-2 text-sm text-start`}>
-                  <div
-                    onClick={() => setShowFolderMenu(true)}
-                    className={`inline-block w-auto p-2 rounded-full cursor-pointer hover:bg-dark-primary transition-all duration-300`}
-                  >
-                    <BsThreeDotsVertical className={`text-base`} />
-                  </div>
-                  {showFolderMenu && (
-                    <FolderOptions
-                      setIsCreateCollection={setIsCreateCollection}
-                    />
-                  )}
-                </th>
-              </tr>
-            </thead>
-
-            <tbody className={`w-full`}>
-              {collections?.map((collection: any) => {
-                return (
-                  <tr
-                    key={collection?._id}
-                    className={`border-t border-dark-primary transition-all duration-300`}
-                  >
-                    <td
-                      className={`w-auto py-3 px-2 text-sm text-start font-[500]`}
-                    >
-                      {collection?.name?.length > 25
-                        ? `${collection?.name.substring(0, 25)}...`
-                        : collection?.name}
-                    </td>
-                    <td
-                      className={`w-auto py-3 px-2 text-sm text-start font-[500]`}
-                    >
-                      {collection?.owner?.name}
-                    </td>
-                    <td
-                      className={`w-auto py-3 px-2 text-sm text-start font-[500]`}
-                    >
-                      {formatDate(collection?.updatedAt)}
-                    </td>
-                    <td className={`py-3 px-2 text-sm text-start font-[500]`}>
-                      {collection?.files?.length}
-                    </td>
-                    <td className={`relative py-3 px-2 text-sm text-start`}>
+            >
+              <MdOutlineDriveFileRenameOutline className={`text-xl`} />
+              <p>New</p>
+            </button>
+          </div>
+        ) : (
+          <div className={`relative w-full`}>
+            {showFolderMenu && (
+              <FolderOptions setIsCreateCollection={setIsCreateCollection} />
+            )}
+            <div className="w-full my-4 overflow-x-scroll md_link:overflow-x-clip sm:max-w-full">
+              <table className={`h-full w-[500px] xs:w-full overflow-x-clip bg-transparent`}>
+                <thead>
+                  <tr>
+                    <th className={`py-3 px-2 text-start`}>Name</th>
+                    <th className={`py-3 px-2 text-start`}>Owner</th>
+                    <th className={`py-3 px-2 text-start`}>Last Modified</th>
+                    <th className={`py-3 px-2 text-start`}>Files</th>
+                    <th className={`relative py-3 px-2 text-sm text-start`}>
                       <div
-                        onClick={() => {
-                          setShowCollectionMenu(collection?._id);
-                        }}
-                        className={`menuBtn inline-block w-auto p-2 rounded-full cursor-pointer hover:bg-dark-primary transition-all duration-300`}
+                        onClick={() => setShowFolderMenu(true)}
+                        className={`inline-block w-auto p-2 rounded-full cursor-pointer hover:bg-dark-primary transition-all duration-300`}
                       >
                         <BsThreeDotsVertical className={`text-base`} />
                       </div>
-                      {showCollectionMenu !== null &&
-                        showCollectionMenu === collection?._id && (
-                          <CollectionsMenu
-                            collection={collection}
-                            setRenameFile={setRenameFile}
-                            setShareCollection={setShareCollection}
-                          />
-                        )}
-                    </td>
+                    </th>
                   </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-      )}
-    </div>
+                </thead>
+
+                <tbody className={`w-full`}>
+                  {collections?.map((collection: any) => {
+                    return (
+                      <tr
+                        key={collection?._id}
+                        className={`border-t border-dark-primary transition-all duration-300`}
+                      >
+                        <td
+                          className={`w-auto py-3 px-2 text-sm text-start font-[500]`}
+                        >
+                          {collection?.name?.length > 25
+                            ? `${collection?.name.substring(0, 25)}...`
+                            : collection?.name}
+                        </td>
+                        <td
+                          className={`w-auto py-3 px-2 text-sm text-start font-[500]`}
+                        >
+                          {collection?.owner?.name}
+                        </td>
+                        <td
+                          className={`w-auto py-3 px-2 text-sm text-start font-[500]`}
+                        >
+                          {formatDate(collection?.updatedAt)}
+                        </td>
+                        <td
+                          className={`py-3 px-2 text-sm text-start font-[500]`}
+                        >
+                          {collection?.files?.length}
+                        </td>
+                        <td className={`relative py-3 px-2 text-sm text-start`}>
+                          <div
+                            onClick={() => {
+                              setShowCollectionMenu(collection?._id);
+                            }}
+                            className={`menuBtn inline-block w-auto p-2 rounded-full cursor-pointer hover:bg-dark-primary transition-all duration-300`}
+                          >
+                            <BsThreeDotsVertical className={`text-base`} />
+                          </div>
+                          {showCollectionMenu !== null &&
+                            showCollectionMenu === collection?._id && (
+                              <CollectionsMenu
+                                collection={collection}
+                                setRenameFile={setRenameFile}
+                                setShareCollection={setShareCollection}
+                              />
+                            )}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+      </div>
+    </>
   );
 };
 

@@ -13,7 +13,10 @@ import socket from "@/utils/socket";
 const InvitePage = () => {
   const router = useRouter();
   const dispatch: any = useDispatch();
-  const { user, profile } = useSelector((state: any) => state.userReducer, shallowEqual);
+  const { user, profile } = useSelector(
+    (state: any) => state.userReducer,
+    shallowEqual
+  );
   const { invites } = useSelector(
     (state: any) => state.inviteReducer,
     shallowEqual
@@ -105,8 +108,8 @@ const InvitePage = () => {
     });
   }, [socket]);
 
-  useEffect(()=> {
-    socket.emit("setup", {collectionId: null, userId: profile?._id});
+  useEffect(() => {
+    socket.emit("setup", { collectionId: null, userId: profile?._id });
   }, []);
 
   return (
@@ -118,72 +121,82 @@ const InvitePage = () => {
       {invites?.length === 0 ? (
         <p className={`text-lg`}>No invites to show</p>
       ) : (
-        <table className={`w-full bg-transparent`}>
-          <thead>
-            <tr>
-              <th className={`py-3 px-2 text-start`}>Collection</th>
-              <th className={`py-3 px-2 text-start`}>Owner</th>
-              <th className={`py-3 px-2 text-start`}>Role</th>
-              <th className={`py-3 px-2 text-start`}>Status</th>
-              <th className={`py-3 px-2 text-start`}>Accept</th>
-              <th className={`py-3 px-2 text-start`}>Reject</th>
-            </tr>
-          </thead>
+        <div className="w-full my-4 overflow-x-scroll md_link:overflow-x-clip sm:max-w-full">
+          <table
+            className={`h-full w-[600px] sm:w-full overflow-x-clip bg-transparent`}
+          >
+            <thead>
+              <tr>
+                <th className={`py-3 px-2 text-start`}>Collection</th>
+                <th className={`py-3 px-2 text-start`}>Owner</th>
+                <th className={`py-3 px-2 text-start`}>Role</th>
+                <th className={`py-3 px-2 text-start`}>Status</th>
+                <th className={`py-3 px-2 text-start`}>Accept</th>
+                <th className={`py-3 px-2 text-start`}>Reject</th>
+              </tr>
+            </thead>
 
-          <tbody>
-            {invites?.map((invite: any) => {
-              return (
-                <tr
-                  key={invite?._id}
-                  className={`border-t border-dark-primary transition-all duration-300`}
-                >
-                  <td className={`py-3 px-2 text-sm text-start font-[500]`}>
-                    {invite?.targetCollection?.name}
-                  </td>
-                  <td className={`py-3 px-2 text-sm text-start font-[500]`}>
-                    {invite?.targetCollection?.owner?.name}
-                  </td>
-                  <td className={`py-3 px-2 text-sm text-start font-[500]`}>
-                    {invite?.role}
-                  </td>
-                  <td
-                    className={`py-3 px-2 text-sm text-start ${
-                      invite?.status === "accepted"
-                        ? "text-green-500"
-                        : invite?.status === "rejected"
-                        ? "text-red-500"
-                        : "text-gray-500"
-                    } font-[500]`}
+            <tbody>
+              {invites?.map((invite: any) => {
+                return (
+                  <tr
+                    key={invite?._id}
+                    className={`border-t border-dark-primary transition-all duration-300`}
                   >
-                    {invite?.status}
-                  </td>
-                  <td className={`py-3 px-2 text-sm text-start font-[500]`}>
-                    <button disabled={invite?.status !== "pending"} onClick={()=> onAccept(invite?._id)}>
-                      <AiOutlineCheck
-                        className={`text-xl ${
-                          invite?.status !== "pending"
-                            ? "text-gray-400"
-                            : "text-green-500 cursor-pointer"
-                        }`}
-                      />
-                    </button>
-                  </td>
-                  <td className={`py-3 px-2 text-sm text-start font-[500]`}>
-                    <button disabled={invite?.status !== "pending"} onClick={()=> onReject(invite?._id)}>
-                      <RxCross2
-                        className={`text-xl ${
-                          invite?.status !== "pending"
-                            ? "text-gray-400"
-                            : "text-red-500 cursor-pointer"
-                        }`}
-                      />
-                    </button>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+                    <td className={`py-3 px-2 text-sm text-start font-[500]`}>
+                      {invite?.targetCollection?.name}
+                    </td>
+                    <td className={`py-3 px-2 text-sm text-start font-[500]`}>
+                      {invite?.targetCollection?.owner?.name}
+                    </td>
+                    <td className={`py-3 px-2 text-sm text-start font-[500]`}>
+                      {invite?.role}
+                    </td>
+                    <td
+                      className={`py-3 px-2 text-sm text-start ${
+                        invite?.status === "accepted"
+                          ? "text-green-500"
+                          : invite?.status === "rejected"
+                          ? "text-red-500"
+                          : "text-gray-500"
+                      } font-[500]`}
+                    >
+                      {invite?.status}
+                    </td>
+                    <td className={`py-3 px-2 text-sm text-start font-[500]`}>
+                      <button
+                        disabled={invite?.status !== "pending"}
+                        onClick={() => onAccept(invite?._id)}
+                      >
+                        <AiOutlineCheck
+                          className={`text-xl ${
+                            invite?.status !== "pending"
+                              ? "text-gray-400"
+                              : "text-green-500 cursor-pointer"
+                          }`}
+                        />
+                      </button>
+                    </td>
+                    <td className={`py-3 px-2 text-sm text-start font-[500]`}>
+                      <button
+                        disabled={invite?.status !== "pending"}
+                        onClick={() => onReject(invite?._id)}
+                      >
+                        <RxCross2
+                          className={`text-xl ${
+                            invite?.status !== "pending"
+                              ? "text-gray-400"
+                              : "text-red-500 cursor-pointer"
+                          }`}
+                        />
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   );

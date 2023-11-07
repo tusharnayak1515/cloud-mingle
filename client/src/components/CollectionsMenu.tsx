@@ -64,8 +64,8 @@ const CollectionsMenu = ({
   return (
     <div
       id="collectionMenu"
-      className={`absolute right-[70px] bottom-0
-  h-auto w-[300px] py-3 flex flex-col justify-start items-start 
+      className={`absolute right-[0px] md_link:right-[70px] top-[0px]
+  h-auto w-[180px] xs:w-[200px] md_link:w-[300px] py-3 flex flex-col justify-start items-start 
   rounded-md bg-dark-primary shadow-dark-menuShadow z-[200]`}
     >
       <div

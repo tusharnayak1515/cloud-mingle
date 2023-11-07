@@ -6,7 +6,10 @@ import ReactDom from "react-dom";
 import { toast } from "react-toastify";
 import { renameCollection, renameFile } from "@/apiCalls/collection";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { setCollection, setCollections } from "@/redux/reducers/collectionReducer";
+import {
+  setCollection,
+  setCollections,
+} from "@/redux/reducers/collectionReducer";
 import socket from "@/utils/socket";
 
 const Modal = dynamic(() => import("./Modal"), { ssr: false });
@@ -23,14 +26,17 @@ const RenameFile = ({ type, show, setShow, collection }: propType) => {
   console.log("show: ", show);
   console.log("collection: ", collection);
   const dispatch: any = useDispatch();
-  const {profile} = useSelector((state:any)=> state.userReducer,shallowEqual);
+  const { profile } = useSelector(
+    (state: any) => state.userReducer,
+    shallowEqual
+  );
   const [fileName, setFileName] = useState(
     type === "collection"
       ? show
         ? show?.name
         : ""
       : show
-      ? show?.filename?.substring(0,show?.filename?.lastIndexOf("."))
+      ? show?.filename?.substring(0, show?.filename?.lastIndexOf("."))
       : ""
   );
 
@@ -51,7 +57,7 @@ const RenameFile = ({ type, show, setShow, collection }: propType) => {
     e.preventDefault();
     try {
       if (show && fileName.replace("/s/g", "").trim().length !== 0) {
-        console.log("file id: ",show?._id);
+        console.log("file id: ", show?._id);
         const res: any = await renameFile({
           collectionId: collection?._id,
           id: show?._id,
@@ -59,7 +65,10 @@ const RenameFile = ({ type, show, setShow, collection }: propType) => {
         });
         if (res.success) {
           dispatch(setCollection({ collection: res.collection }));
-          socket.emit("collection-updated", {collectionId: collection?._id, userId: profile?._id});
+          socket.emit("collection-updated", {
+            collectionId: collection?._id,
+            userId: profile?._id,
+          });
           toast.success("File renamed successfully", {
             position: "top-right",
             autoClose: 3000,
@@ -95,7 +104,10 @@ const RenameFile = ({ type, show, setShow, collection }: propType) => {
         });
         if (res.success) {
           dispatch(setCollections({ collections: res.collections }));
-          socket.emit("collection-updated", {collectionId: collection?._id, userId: profile?._id});
+          socket.emit("collection-updated", {
+            collectionId: collection?._id,
+            userId: profile?._id,
+          });
           toast.success("Collection renamed successfully", {
             position: "top-right",
             autoClose: 3000,
@@ -123,7 +135,10 @@ const RenameFile = ({ type, show, setShow, collection }: propType) => {
 
   return ReactDom.createPortal(
     <Modal>
-      <div id="preview" className={`h-[220px] w-[30%] mx-auto `}>
+      <div
+        id="preview"
+        className={`h-[220px] w-[90%] xs:w-[80%] sm:w-[450px] md_link:w-[450px] mx-auto rounded-md shadow-dark-menuShadow`}
+      >
         <form
           className={`h-full w-full my-[20%] 
             text-dark-primary p-4 flex flex-col justify-start items-center gap-4 rounded-md overflow-hidden bg-dark-secondary`}
