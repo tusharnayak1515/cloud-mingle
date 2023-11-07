@@ -33,16 +33,16 @@ export const userSignin = async ({ email, password }: signinProps) => {
     return data;
 }
 
-// type updateProfilePropType = {
-//     name: String;
-//     email: String;
-//     dp: String | null;
-// }
+type updateProfilePropType = {
+    name: String;
+    email: String;
+    dp: String | null;
+}
 
-// export const updateProfile = async ({ name, email, dp }: updateProfilePropType) => {
-//     const { data } = await api.put(`${url}/api/auth/update-profile`, { name, email, dp });
-//     return data;
-// }
+export const updateProfile = async ({ name, email, dp }: updateProfilePropType) => {
+    const { data } = await api.put(`${url}/api/auth/profile`, { name, email, dp });
+    return data;
+}
 
 type updatePasswordPropType = {
     oldPassword: String;

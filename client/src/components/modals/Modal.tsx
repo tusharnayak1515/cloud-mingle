@@ -1,13 +1,16 @@
-import React from 'react'
+import React from "react";
 
-const Modal = ({children, className}:any) => {
+const Modal = ({ children, className }: any) => {
   return (
     <div
-      className={className || `fixed inset-0 z-[500] bg-[#0000006f] transition-all duration-300`}
+      className={
+        className ||
+        `fixed inset-0 z-[500] bg-[#0000006f] transition-all duration-300`
+      }
     >
-        {children}
+      {children}
     </div>
-  )
-}
+  );
+};
 
 export default Modal;
