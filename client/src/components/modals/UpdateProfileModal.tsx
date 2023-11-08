@@ -12,7 +12,7 @@ const emailRegex = /^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[A-Za-z]+$/;
 
 const UpdateProfileModal = ({ setIsUpdateProfile, setIsLoading }: any) => {
   const dispatch: any = useDispatch();
-  const { profile } = useSelector(
+  const { profile, theme } = useSelector(
     (state: any) => state.userReducer,
     shallowEqual
   );
@@ -134,17 +134,24 @@ const UpdateProfileModal = ({ setIsUpdateProfile, setIsLoading }: any) => {
       <Modal>
         <form
           onSubmit={onSubmitHandler}
-          className={`w-[90%] xxxs:w-[400px] sm:w-[500px] my-8 mx-auto p-6 text-dark-primary 
+          className={`w-[90%] xxxs:w-[400px] sm:w-[500px] my-8 mx-auto p-6 
+          ${
+            theme === "dark"
+              ? "text-dark-primary bg-dark-secondary shadow-dark-menuShadow"
+              : "text-dark-secondary bg-slate-400 shadow-light-menuShadow"
+          } 
           flex flex-col justify-start items-center gap-4 
-          rounded-md bg-dark-secondary shadow-dark-menuShadow`}
+          rounded-md`}
         >
-          <p className={`text-2xl text-dark-primary font-bold`}>
-            Update Profile
-          </p>
+          <p className={`text-2xl font-bold`}>Update Profile</p>
 
           <label htmlFor="dp">
             <div
-              className={`relative h-[150px] w-[150px] border-2 border-dark-primary rounded-full`}
+              className={`relative h-[150px] w-[150px] border-2 ${
+                theme === "dark"
+                  ? "border-dark-primary"
+                  : "border-dark-secondary"
+              } rounded-full`}
             >
               <Image
                 src={userDetails.dp}
@@ -158,8 +165,13 @@ const UpdateProfileModal = ({ setIsUpdateProfile, setIsLoading }: any) => {
           <button
             type="button"
             onClick={onRemoveDp}
-            className={`py-2 px-4 text-dark-secondary rounded-md 
-            bg-dark-primary-btn hover:bg-dark-secondary-btn transition-all duration-300`}
+            className={`py-2 px-4 rounded-md 
+            ${
+              theme === "dark"
+                ? "text-dark-secondary bg-dark-primary-btn hover:bg-dark-secondary-btn"
+                : "text-dark-primary bg-dark-primary hover:opacity-[0.85]"
+            }
+            transition-all duration-300`}
           >
             Remove
           </button>
@@ -184,7 +196,8 @@ const UpdateProfileModal = ({ setIsUpdateProfile, setIsLoading }: any) => {
               placeholder="John Doe"
               className={`w-full py-2 px-4 rounded-md 
               border border-transparent focus:border-dark-primary
-              bg-dark-primary outline-none`}
+              ${theme === "dark" ? "bg-dark-primary" : "bg-slate-500"}
+              outline-none`}
               value={userDetails?.name}
               onChange={onChangeHandler}
             />
@@ -201,7 +214,8 @@ const UpdateProfileModal = ({ setIsUpdateProfile, setIsLoading }: any) => {
               placeholder="example@gmail.com"
               className={`w-full py-2 px-4 rounded-md 
               border border-transparent focus:border-dark-primary
-              bg-dark-primary outline-none`}
+              ${theme === "dark" ? "bg-dark-primary" : "bg-slate-500"}
+              outline-none`}
               value={userDetails?.email}
               onChange={onChangeHandler}
             />
@@ -209,8 +223,12 @@ const UpdateProfileModal = ({ setIsUpdateProfile, setIsLoading }: any) => {
 
           <button
             type="submit"
-            className={`w-full py-2 px-4 text-dark-secondary rounded-md 
-            bg-dark-primary-btn hover:bg-dark-secondary-btn transition-all duration-300`}
+            className={`w-full py-2 px-4 ${
+              theme === "dark"
+                ? "text-dark-secondary bg-dark-primary-btn hover:bg-dark-secondary-btn"
+                : "text-dark-primary bg-dark-primary hover:opacity-[0.85]"
+            } rounded-md 
+            transition-all duration-300`}
           >
             Submit
           </button>
@@ -218,8 +236,12 @@ const UpdateProfileModal = ({ setIsUpdateProfile, setIsLoading }: any) => {
           <button
             type="button"
             onClick={() => setIsUpdateProfile(false)}
-            className={`w-full py-2 px-4 text-dark-secondary rounded-md 
-            bg-dark-primary-btn hover:bg-dark-secondary-btn transition-all duration-300`}
+            className={`w-full py-2 px-4 ${
+              theme === "dark"
+                ? "text-dark-secondary bg-dark-primary-btn hover:bg-dark-secondary-btn"
+                : "text-dark-primary bg-dark-primary hover:opacity-[0.85]"
+            } rounded-md 
+            transition-all duration-300`}
           >
             Cancel
           </button>

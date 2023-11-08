@@ -22,7 +22,7 @@ const UserDetails = dynamic(() => import("@/components/profile/UserDetails"), {
 const ProfilePage = () => {
   const router = useRouter();
   const dispatch: any = useDispatch();
-  const { user, profile } = useSelector(
+  const { user, profile, theme } = useSelector(
     (state: any) => state.userReducer,
     shallowEqual
   );
@@ -59,7 +59,9 @@ const ProfilePage = () => {
 
   return (
     <div
-      className={`min-h-[90vh] w-full p-8 text-dark-primary flex flex-col justify-start items-center gap-4`}
+      className={`min-h-[90vh] w-full p-8 ${
+        theme === "dark" ? "text-dark-primary" : "text-dark-secondary"
+      } flex flex-col justify-start items-center gap-4`}
     >
       {isLoading && <LoadingSpinner />}
       {isUpdateProfile && (
@@ -79,18 +81,26 @@ const ProfilePage = () => {
 
       <button
         onClick={() => setIsUpdateProfile(true)}
-        className={`py-2 px-4 text-sm xs:text-base text-dark-secondary 
-        border-dark-primary rounded-md bg-dark-primary-btn 
-        hover:bg-dark-secondary-btn transition-all duration-300`}
+        className={`py-2 px-4 text-sm xs:text-base
+        ${
+          theme === "dark"
+            ? "text-dark-secondary border-dark-primary bg-dark-primary-btn hover:bg-dark-secondary-btn"
+            : "text-dark-primary border-dark-secondary bg-dark-primary hover:opacity-[0.85]"
+        }
+        rounded-md transition-all duration-300`}
       >
         Update Profile
       </button>
 
       <button
         onClick={() => setIsChangePassword(true)}
-        className={`py-2 px-4 text-sm xs:text-base text-dark-secondary 
-        border-dark-primary rounded-md bg-dark-primary-btn 
-        hover:bg-dark-secondary-btn transition-all duration-300`}
+        className={`py-2 px-4 text-sm xs:text-base
+        ${
+          theme === "dark"
+            ? "text-dark-secondary border-dark-primary bg-dark-primary-btn hover:bg-dark-secondary-btn"
+            : "text-dark-primary border-dark-secondary bg-dark-primary hover:opacity-[0.85]"
+        }
+        rounded-md transition-all duration-300`}
       >
         Change Password
       </button>

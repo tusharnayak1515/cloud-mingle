@@ -5,11 +5,15 @@ import ReactDom from "react-dom";
 import Modal from "./Modal";
 import { toast } from "react-toastify";
 import { addCollection } from "@/apiCalls/collection";
-import { useDispatch } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { setCollections } from "@/redux/reducers/collectionReducer";
 
 const AddCollectionModal = ({ setShow }: any) => {
   const dispatch: any = useDispatch();
+  const { theme } = useSelector(
+    (state: any) => state.userReducer,
+    shallowEqual
+  );
   const [name, setName] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -36,7 +40,7 @@ const AddCollectionModal = ({ setShow }: any) => {
       } else {
         const res: any = await addCollection({ name });
         if (res.success) {
-          dispatch(setCollections({collections: res.collections}));
+          dispatch(setCollections({ collections: res.collections }));
           toast.success("Collection added successfully", {
             position: "top-right",
             autoClose: 3000,
@@ -65,10 +69,22 @@ const AddCollectionModal = ({ setShow }: any) => {
 
   return ReactDom.createPortal(
     <Modal>
-      <div id="preview" className={`h-[220px] w-[80%] xs:w-[350px] xl:w-[30%] mx-auto rounded-md shadow-dark-menuShadow`}>
+      <div
+        id="preview"
+        className={`h-[220px] w-[80%] xs:w-[350px] xl:w-[30%] mx-auto rounded-md ${
+          theme === "dark"
+            ? "shadow-dark-menuShadow"
+            : "shadow-light-menuShadow"
+        }`}
+      >
         <form
           className={`h-full w-full my-20
-            text-dark-primary p-4 flex flex-col justify-start items-center gap-4 rounded-md overflow-hidden bg-dark-secondary`}
+          ${
+            theme === "dark"
+              ? "text-dark-primary bg-dark-secondary"
+              : "text-dark-secondary bg-slate-400"
+          }
+             p-4 flex flex-col justify-start items-center gap-4 rounded-md overflow-hidden `}
           onSubmit={onAddCollection}
         >
           <p className={`text-xl xs:text-2xl font-bold`}>Add Collection</p>
@@ -91,8 +107,12 @@ const AddCollectionModal = ({ setShow }: any) => {
           <div className={`w-full grid grid-cols-2 gap-4`}>
             <button
               type="submit"
-              className={`py-2 px-4 text-dark-secondary rounded-md 
-              hover:bg-dark-secondary-btn bg-dark-primary-btn transition-all duration-300`}
+              className={`w-full py-2 px-4 ${
+                theme === "dark"
+                  ? "text-dark-secondary bg-dark-primary-btn hover:bg-dark-secondary-btn"
+                  : "text-dark-primary bg-dark-primary hover:opacity-[0.85]"
+              } rounded-md 
+              transition-all duration-300`}
             >
               Submit
             </button>
@@ -100,8 +120,12 @@ const AddCollectionModal = ({ setShow }: any) => {
             <button
               type="button"
               onClick={() => setShow(null)}
-              className={`py-2 px-4 text-dark-secondary rounded-md 
-              hover:bg-dark-secondary-btn bg-dark-primary-btn transition-all duration-300`}
+              className={`w-full py-2 px-4 ${
+                theme === "dark"
+                  ? "text-dark-secondary bg-dark-primary-btn hover:bg-dark-secondary-btn"
+                  : "text-dark-primary bg-dark-primary hover:opacity-[0.85]"
+              } rounded-md 
+              transition-all duration-300`}
             >
               Close
             </button>

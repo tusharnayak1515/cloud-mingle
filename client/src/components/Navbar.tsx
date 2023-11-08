@@ -13,7 +13,7 @@ import { BsFillMoonFill, BsFillSunFill } from "react-icons/bs";
 import { RiShutDownLine } from "react-icons/ri";
 import { HiMenuAlt1 } from "react-icons/hi";
 
-const Navbar = ({ setShowSidebar, setMyTheme }: any) => {
+const Navbar = ({ setShowSidebar }: any) => {
   const router = useRouter();
   const dispatch: any = useDispatch();
   const { profile, theme } = useSelector(
@@ -34,26 +34,25 @@ const Navbar = ({ setShowSidebar, setMyTheme }: any) => {
     if (theme === "dark") {
       setCookie("theme", "light");
       dispatch(setTheme({ theme: "light" }));
-      setMyTheme("light");
     } else {
       setCookie("theme", "dark");
       dispatch(setTheme({ theme: "dark" }));
-      setMyTheme("dark");
     }
   };
 
   return (
     <div
       className={`w-full p-4 ${
-        theme === "dark" ? "text-dark-primary" : "text-dark-secondary"
+        theme === "dark"
+          ? "text-dark-primary border-dark-primary"
+          : "text-dark-secondary border-dark-secondary"
       } 
-      flex justify-between md_link:justify-end items-center gap-3 
-      border-b ${
-        theme === "dark" ? "border-dark-primary" : "border-dark-secondary"
-      }`}
+      flex justify-between md_link:justify-end items-center gap-3 border-b`}
     >
       <HiMenuAlt1
-        className={`block md_link:hidden text-3xl text-dark-primary cursor-pointer`}
+        className={`block md_link:hidden text-3xl ${
+          theme === "dark" ? "text-dark-primary" : "text-dark-secondary"
+        } cursor-pointer`}
         onClick={() => setShowSidebar(true)}
       />
 

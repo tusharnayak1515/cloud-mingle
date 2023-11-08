@@ -13,7 +13,7 @@ import socket from "@/utils/socket";
 const InvitePage = () => {
   const router = useRouter();
   const dispatch: any = useDispatch();
-  const { user, profile } = useSelector(
+  const { user, profile, theme } = useSelector(
     (state: any) => state.userReducer,
     shallowEqual
   );
@@ -114,7 +114,9 @@ const InvitePage = () => {
 
   return (
     <div
-      className={`min-h-[90vh] w-full p-8 text-dark-primary flex flex-col justify-start items-start gap-4`}
+      className={`min-h-[90vh] w-full p-8 ${
+        theme === "dark" ? "text-dark-primary" : "text-dark-secondary"
+      } flex flex-col justify-start items-start gap-4`}
     >
       <h1 className={`text-2xl font-bold`}>Invites</h1>
 
@@ -141,7 +143,11 @@ const InvitePage = () => {
                 return (
                   <tr
                     key={invite?._id}
-                    className={`border-t border-dark-primary transition-all duration-300`}
+                    className={`border-t ${
+                      theme === "dark"
+                        ? "border-dark-primary"
+                        : "border-dark-secondary"
+                    } transition-all duration-300`}
                   >
                     <td className={`py-3 px-2 text-sm text-start font-[500]`}>
                       {invite?.targetCollection?.name}

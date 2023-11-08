@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 import ReactDom from "react-dom";
 import { AiOutlineClose } from "react-icons/ai";
 import { getAllUsers } from "@/apiCalls/user";
-import { useDispatch } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import Roles from "../Roles";
 import { toast } from "react-toastify";
 import { inviteUsers } from "@/apiCalls/invite";
@@ -16,6 +16,10 @@ const Modal = dynamic(() => import("./Modal"), { ssr: false });
 
 const ShareCollectionModal = ({ show, setShow }: any) => {
   const dispatch: any = useDispatch();
+  const { theme } = useSelector(
+    (state: any) => state.userReducer,
+    shallowEqual
+  );
   const [users, setUsers] = useState<any>([]);
   const [searchedUsers, setSearchedUsers] = useState<any>([]);
   const [members, setMembers] = useState<any>(
@@ -115,16 +119,23 @@ const ShareCollectionModal = ({ show, setShow }: any) => {
       <Modal>
         <div
           id="preview"
-          className={`h-[500px] w-[90%] xs:w-[80%] sm:w-[450px] md_link:w-[500px] mx-auto rounded-md shadow-dark-menuShadow`}
+          className={`h-[500px] w-[90%] xs:w-[80%] sm:w-[450px] md_link:w-[450px] mx-auto rounded-md ${
+            theme === "dark"
+              ? "shadow-dark-menuShadow"
+              : "shadow-light-menuShadow"
+          }`}
         >
           <div
             className={`relative h-full w-full my-[10%] 
-          text-dark-primary p-4 flex flex-col justify-start items-center gap-4 
-          rounded-md bg-dark-secondary`}
+          p-4 flex flex-col justify-start items-center gap-4 
+          rounded-md ${
+            theme === "dark"
+              ? "text-dark-primary bg-dark-secondary"
+              : "text-dark-secondary bg-slate-400"
+          }`}
           >
-            <h1 className={`text-2xl text-dark-primary font-bold`}>
-              Share Collection
-            </h1>
+            <h1 className={`text-2xl font-bold`}>Share Collection</h1>
+
             <div
               className={`h-auto w-full flex flex-col justify-start items-center gap-2`}
             >
@@ -133,7 +144,9 @@ const ShareCollectionModal = ({ show, setShow }: any) => {
 
             <div
               className={`h-full w-full p-4 flex flex-col justify-start items-center gap-2
-          border border-dark-primary rounded-md overflow-y-scroll`}
+          border ${
+            theme === "dark" ? "border-dark-primary" : "border-dark-secondary"
+          } rounded-md overflow-y-scroll`}
             >
               <input
                 type="text"
@@ -142,7 +155,9 @@ const ShareCollectionModal = ({ show, setShow }: any) => {
                 placeholder="Search users..."
                 value={searchUser}
                 onChange={onSearchChange}
-                className={`w-full py-2 px-4 rounded-md outline-none`}
+                className={`w-full py-2 px-4 rounded-md ${
+                  theme === "dark" ? "bg-dark-primary" : "bg-slate-500"
+                } outline-none`}
               />
 
               {users?.length === 0 ? (
@@ -178,6 +193,7 @@ const ShareCollectionModal = ({ show, setShow }: any) => {
                           setMembers={setMembers}
                           membersObj={membersObj}
                           setMembersObj={setMembersObj}
+                          theme={theme}
                         />
                       );
                     })
@@ -185,19 +201,28 @@ const ShareCollectionModal = ({ show, setShow }: any) => {
                 </div>
               )}
             </div>
+
             <button
               type="button"
               onClick={sendInvite}
-              className={`w-full py-2 px-4 border border-dark-primary rounded-md 
-                hover:bg-dark-primary transition-all duration-300 bg-transparent`}
+              className={`w-full py-2 px-4 border ${
+                theme === "dark"
+                  ? "border-dark-primary hover:bg-dark-primary"
+                  : "border-dark-secondary hover:bg-dark-primary-btn "
+              } rounded-md 
+                transition-all duration-300 bg-transparent`}
             >
               Submit
             </button>
             <button
               type="button"
               onClick={() => setShow(null)}
-              className={`w-full py-2 px-4 border border-dark-primary rounded-md 
-                hover:bg-dark-primary transition-all duration-300 bg-transparent`}
+              className={`w-full py-2 px-4 border ${
+                theme === "dark"
+                  ? "border-dark-primary hover:bg-dark-primary"
+                  : "border-dark-secondary hover:bg-dark-primary-btn "
+              } rounded-md 
+                transition-all duration-300 bg-transparent`}
             >
               Cancel
             </button>

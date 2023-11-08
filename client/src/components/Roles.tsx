@@ -10,17 +10,16 @@ const Roles = ({
   membersObj,
   setMembersObj,
   users,
+  theme,
 }: any) => {
   const memberObj = membersObj?.find((item: any) => item?.member === user?._id);
-
-  console.log("memberObj: ", memberObj);
 
   const [role, setRole] = useState(memberObj?.role);
 
   const onRoleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     e.preventDefault();
-    const {value} = e.target;
-    console.log("role: ", value)
+    const { value } = e.target;
+    console.log("role: ", value);
     setRole(value);
     if (membersObj.some((item: any) => item?.member === user?._id)) {
       setMembersObj((prev: any) =>
@@ -64,7 +63,9 @@ const Roles = ({
         />
 
         <div
-          className={`relative h-[30px] w-[30px] border border-dark-primary 
+          className={`relative h-[30px] w-[30px] border ${
+            theme === "dark" ? "border-dark-primary" : "bg-dark-secondary"
+          } 
                     rounded-full overflow-hidden cursor-pointer`}
         >
           <Image src={user?.dp} alt="dp" fill />
@@ -77,7 +78,11 @@ const Roles = ({
         id="role"
         value={role}
         onChange={onRoleChange}
-        className={`p-2 rounded-md border border-dark-primary outline-none bg-dark-secondary`}
+        className={`p-2 rounded-md border ${
+          theme === "dark"
+            ? "border-dark-primary bg-dark-secondary"
+            : "border-dark-secondary bg-slate-400"
+        } outline-none`}
       >
         <option value="read-only">read-only</option>
         <option value="write-only">write-only</option>

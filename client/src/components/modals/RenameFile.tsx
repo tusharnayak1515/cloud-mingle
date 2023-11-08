@@ -22,11 +22,8 @@ type propType = {
 };
 
 const RenameFile = ({ type, show, setShow, collection }: propType) => {
-  console.log("type: ", type);
-  console.log("show: ", show);
-  console.log("collection: ", collection);
   const dispatch: any = useDispatch();
-  const { profile } = useSelector(
+  const { profile, theme } = useSelector(
     (state: any) => state.userReducer,
     shallowEqual
   );
@@ -137,11 +134,20 @@ const RenameFile = ({ type, show, setShow, collection }: propType) => {
     <Modal>
       <div
         id="preview"
-        className={`h-[220px] w-[90%] xs:w-[80%] sm:w-[450px] md_link:w-[450px] mx-auto rounded-md shadow-dark-menuShadow`}
+        className={`h-[220px] w-[90%] xs:w-[80%] sm:w-[450px] md_link:w-[450px] mx-auto rounded-md ${
+          theme === "dark"
+            ? "shadow-dark-menuShadow"
+            : "shadow-light-menuShadow"
+        }`}
       >
         <form
-          className={`h-full w-full my-[20%] 
-            text-dark-primary p-4 flex flex-col justify-start items-center gap-4 rounded-md overflow-hidden bg-dark-secondary`}
+          className={`h-full w-full my-20
+          ${
+            theme === "dark"
+              ? "text-dark-primary bg-dark-secondary"
+              : "text-dark-secondary bg-slate-400"
+          }
+             p-4 flex flex-col justify-start items-center gap-4 rounded-md overflow-hidden `}
           onSubmit={type === "file" ? onRenameFile : onRenameCollection}
         >
           <p className={`text-2xl font-bold`}>
@@ -161,15 +167,22 @@ const RenameFile = ({ type, show, setShow, collection }: propType) => {
               placeholder={type === "file" ? `File name` : `Collection name`}
               value={fileName}
               onChange={onChangeHandler}
-              className={`w-full py-2 px-4 bg-dark-primary rounded-md outline-none`}
+              className={`w-full py-2 px-4 rounded-md 
+              border border-transparent focus:border-dark-primary
+              ${theme === "dark" ? "bg-dark-primary" : "bg-slate-500"}
+              outline-none`}
             />
           </div>
 
           <div className={`w-full grid grid-cols-2 gap-4`}>
             <button
               type="submit"
-              className={`py-2 px-4 text-dark-secondary rounded-md 
-              hover:bg-dark-secondary-btn bg-dark-primary-btn transition-all duration-300`}
+              className={`w-full py-2 px-4 ${
+                theme === "dark"
+                  ? "text-dark-secondary bg-dark-primary-btn hover:bg-dark-secondary-btn"
+                  : "text-dark-primary bg-dark-primary hover:opacity-[0.85]"
+              } rounded-md 
+              transition-all duration-300`}
             >
               Rename
             </button>
@@ -177,8 +190,12 @@ const RenameFile = ({ type, show, setShow, collection }: propType) => {
             <button
               type="button"
               onClick={() => setShow(null)}
-              className={`py-2 px-4 text-dark-secondary rounded-md 
-              hover:bg-dark-secondary-btn bg-dark-primary-btn transition-all duration-300`}
+              className={`w-full py-2 px-4 ${
+                theme === "dark"
+                  ? "text-dark-secondary bg-dark-primary-btn hover:bg-dark-secondary-btn"
+                  : "text-dark-primary bg-dark-primary hover:opacity-[0.85]"
+              } rounded-md 
+              transition-all duration-300`}
             >
               Close
             </button>

@@ -13,19 +13,33 @@ import {
 import Link from "next/link";
 import { AiOutlineStar } from "react-icons/ai";
 import { RiUserShared2Line } from "react-icons/ri";
+import { shallowEqual, useSelector } from "react-redux";
 
-const SidebarModal = ({ setShowSidebar }: any) => {
+const SidebarModal = ({ showSidebar, setShowSidebar }: any) => {
+  const { theme } = useSelector(
+    (state: any) => state.userReducer,
+    shallowEqual
+  );
   return ReactDom.createPortal(
     <div className={`h-full w-full md_link:hidden`}>
-      <Modal>
+      <Modal
+        className={`fixed ${
+          showSidebar ? "inset-0" : "left-[-10000px]"
+        } z-[500] bg-[#00000091] transition-all duration-300`}
+      >
         <div className={`h-full w-full flex justify-start items-start`}>
           <div
-            className={`relative h-full w-[250px] p-4 text-dark-primary 
-            flex flex-col justify-start items-start gap-4 
-            bg-dark-primary`}
+            className={`relative h-full w-[250px] p-4 ${
+              theme === "dark"
+                ? "text-dark-primary bg-dark-primary"
+                : "text-dark-secondary bg-slate-400"
+            } 
+            flex flex-col justify-start items-start gap-4`}
           >
             <IoClose
-              className={`absolute top-[10px] left-[260px] text-4xl text-dark-primary cursor-pointer`}
+              className={`absolute top-[10px] left-[260px] text-4xl ${
+                theme === "dark" ? "text-dark-primary" : "text-dark-secondary"
+              } cursor-pointer`}
               onClick={() => setShowSidebar(false)}
             />
 
@@ -37,7 +51,11 @@ const SidebarModal = ({ setShowSidebar }: any) => {
             </div>
 
             <div
-              className={`w-full py-2 flex flex-col justify-start items-start border-t border-dark-primary`}
+              className={`w-full py-2 flex flex-col justify-start items-start border-t ${
+                theme === "dark"
+                  ? "border-dark-primary"
+                  : "border-dark-secondary"
+              }`}
             >
               <Link
                 href={`/`}
