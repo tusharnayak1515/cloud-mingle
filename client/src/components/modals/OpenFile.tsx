@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import ReactDom from "react-dom";
 import { AiOutlineClose } from "react-icons/ai";
 import ReactPlayer from "react-player";
+import { shallowEqual, useSelector } from "react-redux";
 const Modal = dynamic(() => import("./Modal"), { ssr: false });
 
 type propType = {
@@ -13,6 +14,10 @@ type propType = {
 };
 
 const OpenFile = ({ show, setShow }: propType) => {
+  const { theme } = useSelector(
+    (state: any) => state.userReducer,
+    shallowEqual
+  );
 
   const ImagePreview = () => {
     const buffer: Buffer = Buffer.from(show?.data?.data, "base64url");
@@ -79,13 +84,19 @@ const OpenFile = ({ show, setShow }: propType) => {
     >
       <div
         id="preview"
-        className={`relative h-[300px] xxxs:h-[70vh] sm:h-[60vh] md_link:h-[80%] ${show ? "w-[85%] xxxs:w-[420px] sm:w-[450px] md_link:w-[600px]" : "w-0"} mx-auto`}
+        className={`relative h-[300px] xxxs:h-[70vh] sm:h-[60vh] md_link:h-[80%] ${
+          show ? "w-[85%] xxxs:w-[420px] sm:w-[450px] md_link:w-[600px]" : "w-0"
+        } mx-auto`}
       >
         <div className={`h-full w-full my-[3rem] rounded-md overflow-hidden`}>
           {renderPreview()}
           <AiOutlineClose
             onClick={() => setShow(null)}
-            className={`absolute left-[95%] sm:left-[101%] top-[-10%] xxxs:top-[-7%] sm:top-[2%] text-3xl text-dark-primary cursor-pointer`}
+            className={`absolute left-[95%] sm:left-[101%] top-[-10%] xxxs:top-[-7%] sm:top-[2%] 
+            text-3xl ${
+              theme === "dark" ? "text-dark-primary" : "text-dark-secondary"
+            } 
+            cursor-pointer`}
           />
         </div>
       </div>

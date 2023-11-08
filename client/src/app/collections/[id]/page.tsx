@@ -47,7 +47,7 @@ const CollectionDetailsPage = () => {
   const router = useRouter();
   const params = useParams();
   const dispatch: any = useDispatch();
-  const { user, profile } = useSelector(
+  const { user, profile, theme } = useSelector(
     (state: any) => state.userReducer,
     shallowEqual
   );
@@ -403,7 +403,9 @@ const CollectionDetailsPage = () => {
 
   return (
     <div
-      className={`min-h-[90vh] w-full p-8 text-dark-primary flex flex-col justify-start items-start gap-4`}
+      className={`min-h-[90vh] w-full p-8 
+      ${theme === "dark" ? "text-dark-primary" : "text-dark-secondary"} 
+      flex flex-col justify-start items-start gap-4`}
     >
       {isLoading && <LoadingSpinner />}
 
@@ -414,12 +416,16 @@ const CollectionDetailsPage = () => {
         ) ? (
           <AiFillStar
             onClick={onStarCollection}
-            className={`text-2xl text-dark-primary cursor-pointer`}
+            className={`text-2xl ${
+              theme === "dark" ? "text-dark-primary" : "text-dark-secondary"
+            } cursor-pointer`}
           />
         ) : (
           <AiOutlineStar
             onClick={onStarCollection}
-            className={`text-2xl text-dark-primary cursor-pointer`}
+            className={`text-2xl ${
+              theme === "dark" ? "text-dark-primary" : "text-dark-secondary"
+            } cursor-pointer`}
           />
         )}
       </div>
@@ -460,9 +466,7 @@ const CollectionDetailsPage = () => {
                     <th className={`py-3 px-2 text-start`}>Owner</th>
                     <th className={`py-3 px-2 text-start`}>Last Modified</th>
                     <th className={`py-3 px-2 text-sm text-start`}>
-                      <div
-                        className={`inline-block w-auto p-2 rounded-full cursor-pointer hover:bg-dark-primary transition-all duration-300`}
-                      >
+                      <div className={`inline-block w-auto p-2`}>
                         <BsThreeDotsVertical className={`text-base`} />
                       </div>
                     </th>
@@ -474,7 +478,11 @@ const CollectionDetailsPage = () => {
                     return (
                       <tr
                         key={file?._id}
-                        className={`border-t border-dark-primary transition-all duration-300`}
+                        className={`border-t ${
+                          theme === "dark"
+                            ? "border-dark-primary"
+                            : "border-dark-secondary"
+                        } transition-all duration-300`}
                       >
                         <td
                           className={`py-3 px-2 text-sm text-start font-[500]`}
@@ -505,7 +513,13 @@ const CollectionDetailsPage = () => {
                             onClick={() => {
                               onMenuClick(file?._id);
                             }}
-                            className={`menuBtn inline-block w-auto p-2 rounded-full cursor-pointer hover:bg-dark-primary transition-all duration-300`}
+                            className={`menuBtn inline-block w-auto p-2 rounded-full cursor-pointer 
+                            ${
+                              theme === "dark"
+                                ? "hover:bg-dark-primary"
+                                : "hover:bg-dark-primary-btn"
+                            } 
+                            transition-all duration-300`}
                           >
                             <BsThreeDotsVertical className={`text-base`} />
                           </div>

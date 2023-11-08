@@ -11,7 +11,7 @@ const UploadFile = ({
   handleFileInputChange,
   onAddFile,
 }: any) => {
-  const { profile } = useSelector(
+  const { profile, theme } = useSelector(
     (state: any) => state.userReducer,
     shallowEqual
   );
@@ -33,7 +33,11 @@ const UploadFile = ({
             onDrop={handleFileDrop}
             onDragOver={(e) => e.preventDefault()}
             className={`h-[150px] xxxs:h-[200px] w-[300px] xxxs:w-[350px] flex justify-center items-center
-            border-2 border-dashed border-dark-primary rounded-md self-center`}
+            border-2 border-dashed 
+            ${
+              theme === "dark" ? "border-dark-primary" : "border-dark-secondary"
+            } 
+            rounded-md self-center`}
           >
             <label
               htmlFor="file"
@@ -43,7 +47,13 @@ const UploadFile = ({
                 <>{previewFile(selectedFile)}</>
               ) : (
                 <FaUpload
-                  className={`text-[4rem] text-dark-primary cursor-pointer`}
+                  className={`text-[4rem] 
+                  ${
+                    theme === "dark"
+                      ? "text-dark-primary"
+                      : "text-dark-secondary"
+                  } 
+                  cursor-pointer`}
                 />
               )}
             </label>
@@ -56,8 +66,11 @@ const UploadFile = ({
             />
           </div>
           <button
-            className={`py-2 px-4 text-dark-secondary rounded-md hover:bg-dark-secondary-btn 
-        bg-dark-primary-btn transition-all duration-300 self-center`}
+            className={`py-2 px-4 ${
+              theme === "dark"
+                ? "text-dark-secondary bg-dark-primary-btn hover:bg-dark-secondary-btn"
+                : "text-dark-primary bg-dark-primary hover:opacity-[0.85]"
+            } rounded-md transition-all duration-300 self-center`}
             onClick={onAddFile}
           >
             Upload

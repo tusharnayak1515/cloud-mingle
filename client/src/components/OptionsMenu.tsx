@@ -13,7 +13,7 @@ const OptionsMenu = ({
   setShow,
   setRename,
 }: any) => {
-  const { profile } = useSelector(
+  const { profile, theme } = useSelector(
     (state: any) => state.userReducer,
     shallowEqual
   );
@@ -56,13 +56,23 @@ const OptionsMenu = ({
       id="menu"
       className={`absolute right-[0px] md_link:right-[70px] top-[0px]
   h-auto w-[180px] xs:w-[200px] md_link:w-[300px] py-3 flex flex-col justify-start items-start 
-  rounded-md bg-dark-primary shadow-dark-menuShadow z-[200]`}
+  rounded-md ${
+    theme === "dark"
+      ? "bg-dark-primary shadow-dark-menuShadow"
+      : "bg-slate-400 shadow-light-menuShadow"
+  } z-[200]`}
     >
       {(file?.contentType.startsWith("image/") ||
         file?.contentType === "application/pdf") && (
         <div
           onClick={() => setShow(file)}
-          className={`w-full p-2 flex justify-start items-center gap-4  hover:bg-dark-secondary cursor-pointer`}
+          className={`w-full p-2 flex justify-start items-center gap-4 
+          ${
+            theme === "dark"
+              ? "hover:bg-dark-secondary"
+              : "hover:bg-dark-primary-btn"
+          } 
+          cursor-pointer transition-all duration-300`}
         >
           <HiViewfinderCircle className={`text-xl`} />
           <p>Open</p>
@@ -71,7 +81,13 @@ const OptionsMenu = ({
 
       <div
         onClick={onDownloadFile}
-        className={`w-full p-2 flex justify-start items-center gap-4  hover:bg-dark-secondary cursor-pointer`}
+        className={`w-full p-2 flex justify-start items-center gap-4 
+          ${
+            theme === "dark"
+              ? "hover:bg-dark-secondary"
+              : "hover:bg-dark-primary-btn"
+          } 
+          cursor-pointer transition-all duration-300`}
       >
         <FiDownload className={`text-xl`} />
         <p>Download</p>
@@ -83,7 +99,13 @@ const OptionsMenu = ({
           memberObj?.role === "full-access")) && (
         <div
           onClick={onRenameClick}
-          className={`w-full p-2 flex justify-start items-center gap-4  hover:bg-dark-secondary cursor-pointer`}
+          className={`w-full p-2 flex justify-start items-center gap-4 
+          ${
+            theme === "dark"
+              ? "hover:bg-dark-secondary"
+              : "hover:bg-dark-primary-btn"
+          } 
+          cursor-pointer transition-all duration-300`}
         >
           <MdOutlineDriveFileRenameOutline className={`text-xl`} />
           <p>Rename</p>
@@ -95,8 +117,14 @@ const OptionsMenu = ({
         (file?.addedBy?._id === profile?._id &&
           memberObj?.role === "full-access")) && (
         <div
-          className={`w-full p-2 flex justify-start items-center gap-4  hover:bg-dark-secondary cursor-pointer`}
           onClick={onDeleteClick}
+          className={`w-full p-2 flex justify-start items-center gap-4 
+        ${
+          theme === "dark"
+            ? "hover:bg-dark-secondary"
+            : "hover:bg-dark-primary-btn"
+        } 
+        cursor-pointer transition-all duration-300`}
         >
           <MdDelete className={`text-xl`} />
           <p>Delete</p>

@@ -38,6 +38,7 @@ const config: Config = {
       },
       boxShadow: {
         "dark-menuShadow": "0px 0px 7px 0px #2cb2b9",
+        "light-menuShadow": "0px 0px 7px 0px #1b1b1b",
         "dark-formShadow": "0px 0px 5x 0px red",
       },
       backgroundColor: {

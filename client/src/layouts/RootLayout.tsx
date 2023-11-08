@@ -18,6 +18,8 @@ const RootLayout = ({ children }: any) => {
   }
 
   const [showSidebar, setShowSidebar] = useState(false);
+  const isTheme = getCookie("theme");
+  const [theme, setTheme] = useState<string>(isTheme || "dark");
 
   useEffect(() => {
     const user = getCookie("authorization");
@@ -29,14 +31,16 @@ const RootLayout = ({ children }: any) => {
   return (
     <Provider store={store}>
       <div
-        className={`min-h-[100vh] w-full grid grid-cols-12 bg-dark-secondary`}
+        className={`min-h-[100vh] w-full grid grid-cols-12 ${
+          theme === "dark" ? "bg-dark-secondary" : "bg-slate-200"
+        }`}
       >
         {showSidebar && <SidebarModal setShowSidebar={setShowSidebar} />}
         <Sidebar />
         <div
           className={`h-full col-span-12 md_link:col-span-9 xl:col-span-10 flex flex-col justify-start items-start`}
         >
-          <Navbar setShowSidebar={setShowSidebar} />
+          <Navbar setShowSidebar={setShowSidebar} setMyTheme={setTheme} />
           {children}
         </div>
       </div>

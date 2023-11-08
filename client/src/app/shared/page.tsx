@@ -26,7 +26,7 @@ const RenameFile = dynamic(() => import("@/components/modals/RenameFile"), {
 const Shared = () => {
   const router = useRouter();
   const dispatch: any = useDispatch();
-  const { user, profile } = useSelector(
+  const { user, profile, theme } = useSelector(
     (state: any) => state.userReducer,
     shallowEqual
   );
@@ -91,7 +91,9 @@ const Shared = () => {
 
   return (
     <div
-      className={`min-h-[90vh] w-full p-8 text-dark-primary flex flex-col justify-start items-start gap-4`}
+      className={`min-h-[90vh] w-full p-8 
+      ${theme === "dark" ? "text-dark-primary" : "text-dark-secondary"} 
+      flex flex-col justify-start items-start gap-4`}
     >
       {isLoading && <LoadingSpinner />}
 
@@ -117,9 +119,7 @@ const Shared = () => {
       ) : (
         <div className={`relative w-full`}>
           <div className="w-full my-4 overflow-x-scroll md_link:overflow-x-clip sm:max-w-full">
-            <table
-              className={`h-full w-[500px] xs:w-full bg-transparent`}
-            >
+            <table className={`h-full w-[500px] xs:w-full bg-transparent`}>
               <thead>
                 <tr>
                   <th className={`py-3 px-2 text-start`}>Name</th>
@@ -127,9 +127,7 @@ const Shared = () => {
                   <th className={`py-3 px-2 text-start`}>Last Modified</th>
                   <th className={`py-3 px-2 text-start`}>Files</th>
                   <th className={`relative py-3 px-2 text-sm text-start`}>
-                    <div
-                      className={`inline-block w-auto p-2 rounded-full cursor-pointer hover:bg-dark-primary transition-all duration-300`}
-                    >
+                    <div className={`inline-block w-auto p-2`}>
                       <BsThreeDotsVertical className={`text-base`} />
                     </div>
                   </th>
@@ -141,7 +139,13 @@ const Shared = () => {
                   return (
                     <tr
                       key={collection?._id}
-                      className={`border-t border-dark-primary transition-all duration-300`}
+                      className={`border-t 
+                      ${
+                        theme === "dark"
+                          ? "border-dark-primary"
+                          : "border-dark-secondary"
+                      } 
+                      transition-all duration-300`}
                     >
                       <td
                         className={`w-auto py-3 px-2 text-sm text-start font-[500]`}
@@ -168,7 +172,13 @@ const Shared = () => {
                           onClick={() => {
                             setShowCollectionMenu(collection?._id);
                           }}
-                          className={`menuBtn inline-block w-auto p-2 rounded-full cursor-pointer hover:bg-dark-primary transition-all duration-300`}
+                          className={`menuBtn inline-block w-auto p-2 rounded-full cursor-pointer 
+                          ${
+                            theme === "dark"
+                              ? "hover:bg-dark-primary"
+                              : "hover:bg-dark-primary-btn"
+                          } 
+                          transition-all duration-300`}
                         >
                           <BsThreeDotsVertical className={`text-base`} />
                         </div>

@@ -18,7 +18,7 @@ const CollectionsMenu = ({
 }: any) => {
   const router = useRouter();
   const dispatch: any = useDispatch();
-  const { profile } = useSelector(
+  const { profile, theme } = useSelector(
     (state: any) => state.userReducer,
     shallowEqual
   );
@@ -28,7 +28,10 @@ const CollectionsMenu = ({
       const res: any = await deleteCollection(collection?._id);
       if (res.success) {
         dispatch(setCollections({ collections: res.collections }));
-        socket.emit("collection-updated", {collectionId: collection?._id, userId: profile?._id});
+        socket.emit("collection-updated", {
+          collectionId: collection?._id,
+          userId: profile?._id,
+        });
         toast.success("Collection deleted successfully", {
           position: "top-right",
           autoClose: 3000,
@@ -40,7 +43,7 @@ const CollectionsMenu = ({
         });
       }
     } catch (error: any) {
-      console.log("error: ",error);
+      console.log("error: ", error);
       toast.error(error.response.data.error, {
         position: "top-right",
         autoClose: 3000,
@@ -66,11 +69,19 @@ const CollectionsMenu = ({
       id="collectionMenu"
       className={`absolute right-[0px] md_link:right-[70px] top-[0px]
   h-auto w-[180px] xs:w-[200px] md_link:w-[300px] py-3 flex flex-col justify-start items-start 
-  rounded-md bg-dark-primary shadow-dark-menuShadow z-[200]`}
+  rounded-md ${
+    theme === "dark" ? "bg-dark-primary shadow-dark-menuShadow" : "bg-slate-400 shadow-light-menuShadow"
+  } z-[200]`}
     >
       <div
         onClick={onOpen}
-        className={`w-full p-2 flex justify-start items-center gap-4  hover:bg-dark-secondary cursor-pointer`}
+        className={`w-full p-2 flex justify-start items-center gap-4 
+        ${
+          theme === "dark"
+            ? "hover:bg-dark-secondary"
+            : "hover:bg-dark-primary-btn"
+        } 
+        cursor-pointer transition-all duration-300`}
       >
         <HiViewfinderCircle className={`text-xl`} />
         <p>Open</p>
@@ -79,7 +90,13 @@ const CollectionsMenu = ({
       {setRenameFile && profile?._id === collection?.owner?._id && (
         <div
           onClick={onRenameClick}
-          className={`w-full p-2 flex justify-start items-center gap-4  hover:bg-dark-secondary cursor-pointer`}
+          className={`w-full p-2 flex justify-start items-center gap-4 
+          ${
+            theme === "dark"
+              ? "hover:bg-dark-secondary"
+              : "hover:bg-dark-primary-btn"
+          } 
+          cursor-pointer transition-all duration-300`}
         >
           <MdOutlineDriveFileRenameOutline className={`text-xl`} />
           <p>Rename</p>
@@ -89,7 +106,13 @@ const CollectionsMenu = ({
       {setShareCollection && profile?._id === collection?.owner?._id && (
         <div
           onClick={() => setShareCollection(collection)}
-          className={`w-full p-2 flex justify-start items-center gap-4  hover:bg-dark-secondary cursor-pointer`}
+          className={`w-full p-2 flex justify-start items-center gap-4 
+          ${
+            theme === "dark"
+              ? "hover:bg-dark-secondary"
+              : "hover:bg-dark-primary-btn"
+          } 
+          cursor-pointer transition-all duration-300`}
         >
           <BsShareFill className={`text-xl`} />
           <p>Share</p>
@@ -98,8 +121,14 @@ const CollectionsMenu = ({
 
       {profile?._id === collection?.owner?._id && (
         <div
-          className={`w-full p-2 flex justify-start items-center gap-4  hover:bg-dark-secondary cursor-pointer`}
           onClick={onDeleteClick}
+          className={`w-full p-2 flex justify-start items-center gap-4 
+          ${
+            theme === "dark"
+              ? "hover:bg-dark-secondary"
+              : "hover:bg-dark-primary-btn"
+          } 
+          cursor-pointer transition-all duration-300`}
         >
           <MdDelete className={`text-xl`} />
           <p>Delete</p>

@@ -15,6 +15,7 @@ import { MdOutlineDriveFileRenameOutline } from "react-icons/md";
 import { getProfile } from "@/apiCalls/auth";
 import { setProfile } from "@/redux/reducers/userReducer";
 import socket from "@/utils/socket";
+import { getCookie, setCookie } from "cookies-next";
 const AddCollectionModal = dynamic(
   () => import("@/components/modals/AddCollectionModal"),
   { ssr: false }
@@ -26,11 +27,17 @@ const ShareCollectionModal = dynamic(
 const RenameFile = dynamic(() => import("@/components/modals/RenameFile"), {
   ssr: false,
 });
+const Wrapper = dynamic(() => import("@/components/Wrapper"), {
+  ssr: false,
+});
 
 const Home = () => {
   const router = useRouter();
   const dispatch: any = useDispatch();
-  const { user } = useSelector((state: any) => state.userReducer, shallowEqual);
+  const { user, theme } = useSelector(
+    (state: any) => state.userReducer,
+    shallowEqual
+  );
   const { collections } = useSelector(
     (state: any) => state.collectionReducer,
     shallowEqual
@@ -81,6 +88,9 @@ const Home = () => {
     }
     fetchMyCollections();
     fetchProfile();
+    if (!getCookie("theme")) {
+      setCookie("theme", "dark");
+    }
   }, [user, router]);
 
   useEffect(() => {
@@ -146,8 +156,10 @@ const Home = () => {
           collection={renameFile}
         />
       )}
-      <div
-        className={`min-h-[90vh] w-full p-8 text-dark-primary flex flex-col justify-start items-start gap-4`}
+      <Wrapper
+        className={`min-h-[90vh] w-full p-8 ${
+          theme === "dark" ? "text-dark-primary" : "text-slate-900"
+        } flex flex-col justify-start items-start gap-4`}
       >
         <h1 className={`text-2xl font-bold`}>My Collections</h1>
 
@@ -169,7 +181,9 @@ const Home = () => {
               <FolderOptions setIsCreateCollection={setIsCreateCollection} />
             )}
             <div className="w-full my-4 overflow-x-scroll md_link:overflow-x-clip sm:max-w-full">
-              <table className={`h-full w-[500px] xs:w-full overflow-x-clip bg-transparent`}>
+              <table
+                className={`h-full w-[500px] xs:w-full overflow-x-clip bg-transparent`}
+              >
                 <thead>
                   <tr>
                     <th className={`py-3 px-2 text-start`}>Name</th>
@@ -179,7 +193,13 @@ const Home = () => {
                     <th className={`relative py-3 px-2 text-sm text-start`}>
                       <div
                         onClick={() => setShowFolderMenu(true)}
-                        className={`inline-block w-auto p-2 rounded-full cursor-pointer hover:bg-dark-primary transition-all duration-300`}
+                        className={`inline-block w-auto p-2 rounded-full cursor-pointer 
+                        ${
+                          theme === "dark"
+                            ? "hover:bg-dark-primary"
+                            : "hover:bg-dark-secondary-btn"
+                        } 
+                        transition-all duration-300`}
                       >
                         <BsThreeDotsVertical className={`text-base`} />
                       </div>
@@ -192,7 +212,7 @@ const Home = () => {
                     return (
                       <tr
                         key={collection?._id}
-                        className={`border-t border-dark-primary transition-all duration-300`}
+                        className={`border-t ${theme === "dark" ? 'border-dark-primary' : 'border-dark-secondary'} transition-all duration-300`}
                       >
                         <td
                           className={`w-auto py-3 px-2 text-sm text-start font-[500]`}
@@ -221,7 +241,13 @@ const Home = () => {
                             onClick={() => {
                               setShowCollectionMenu(collection?._id);
                             }}
-                            className={`menuBtn inline-block w-auto p-2 rounded-full cursor-pointer hover:bg-dark-primary transition-all duration-300`}
+                            className={`menuBtn inline-block w-auto p-2 rounded-full cursor-pointer 
+                            ${
+                              theme === "dark"
+                                ? "hover:bg-dark-primary"
+                                : "hover:bg-dark-secondary-btn"
+                            }
+                            transition-all duration-300`}
                           >
                             <BsThreeDotsVertical className={`text-base`} />
                           </div>
@@ -242,7 +268,7 @@ const Home = () => {
             </div>
           </div>
         )}
-      </div>
+      </Wrapper>
     </>
   );
 };
