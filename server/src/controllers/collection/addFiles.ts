@@ -65,6 +65,10 @@ const addFiles = async (req: Request, res: Response) => {
                     .populate({
                         path: "members.member",
                         select: "-password",
+                    })
+                    .populate({
+                        path: "files.addedBy",
+                        select: "-password",
                     });
             }
 

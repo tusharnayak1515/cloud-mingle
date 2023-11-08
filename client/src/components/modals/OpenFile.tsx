@@ -79,13 +79,13 @@ const OpenFile = ({ show, setShow }: propType) => {
     >
       <div
         id="preview"
-        className={`relative h-[80%] ${show ? "w-[60%]" : "w-0"} mx-auto`}
+        className={`relative h-[300px] xxxs:h-[70vh] sm:h-[60vh] md_link:h-[80%] ${show ? "w-[85%] xxxs:w-[420px] sm:w-[450px] md_link:w-[600px]" : "w-0"} mx-auto`}
       >
-        <div className={`h-full w-full my-[5%] rounded-md overflow-hidden`}>
+        <div className={`h-full w-full my-[3rem] rounded-md overflow-hidden`}>
           {renderPreview()}
           <AiOutlineClose
             onClick={() => setShow(null)}
-            className={`absolute left-[101%] top-[2%] text-3xl text-dark-primary cursor-pointer`}
+            className={`absolute left-[95%] sm:left-[101%] top-[-10%] xxxs:top-[-7%] sm:top-[2%] text-3xl text-dark-primary cursor-pointer`}
           />
         </div>
       </div>
