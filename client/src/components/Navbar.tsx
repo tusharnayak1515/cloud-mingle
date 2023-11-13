@@ -43,16 +43,14 @@ const Navbar = ({ setShowSidebar }: any) => {
   const RenderIcon = () => {
     return (
       <div
-        className={`flex items-center ${
-          theme === "dark"
-            ? "justify-end] bg-dark-secondary"
-            : "justify-start]"
+        className={`w-full p-1 flex items-center ${
+          theme === "dark" ? "bg-slate-800" : "bg-slate-300"
         } rounded-full`}
       >
         {theme === "dark" ? (
-          <BsFillMoonFill className={`w-[20px] translate-x-[60px] text-2xl transition-all duration-300`} />
+          <BsFillMoonFill className={`w-[20px] translate-x-[60px] text-2xl`} />
         ) : (
-          <BsFillSunFill className={`w-[20px] translate-x-0 text-2xl transition-all duration-300`} />
+          <BsFillSunFill className={`w-[20px] translate-x-0 text-2xl`} />
         )}
       </div>
     );
@@ -76,19 +74,16 @@ const Navbar = ({ setShowSidebar }: any) => {
 
       <div className={`flex justify-start items-center gap-3`}>
         <div
-          className={`w-[90px] ${
-            theme === "dark" ? "bg-dark-primary" : "bg-slate-400"
-          } rounded-full overflow-hidden`}
+          className={`w-[100px] p-1 ${
+            theme === "dark"
+              ? "shadow-dark-menuShadow bg-dark-primary"
+              : "shadow-light-menuShadow bg-slate-400"
+          } rounded-full overflow-hidden `}
         >
           <div
-            className={`w-[80px] m-1 bg-red-500] cursor-pointer transition-all duration-500`}
+            className={`w-full cursor-pointer transition-all duration-300`}
             onClick={onToggleTheme}
           >
-            {/* {theme === "light" ? (
-              <BsFillSunFill className={`text-2xl translate-x-[60px]`} />
-            ) : (
-              <BsFillMoonFill className={`text-2xl translate-x-0`} />
-            )} */}
             <RenderIcon />
           </div>
         </div>

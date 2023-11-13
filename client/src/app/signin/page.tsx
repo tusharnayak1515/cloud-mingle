@@ -121,6 +121,22 @@ const Signin = () => {
     }
   };
 
+  const RenderIcon = () => {
+    return (
+      <div
+        className={`w-full p-1 flex items-center ${
+          theme === "dark" ? "bg-slate-800" : "bg-slate-300"
+        } rounded-full`}
+      >
+        {theme === "dark" ? (
+          <BsFillMoonFill className={`w-[20px] translate-x-[60px] text-2xl`} />
+        ) : (
+          <BsFillSunFill className={`w-[20px] translate-x-0 text-2xl`} />
+        )}
+      </div>
+    );
+  };
+
   useEffect(() => {
     if (user) {
       router.replace("/");
@@ -144,17 +160,20 @@ const Signin = () => {
           theme === "dark" ? "text-dark-primary" : "text-dark-secondary"
         }`}
       >
-        {theme === "dark" ? (
-          <BsFillSunFill
-            className={`text-2xl cursor-pointer`}
+        <div
+          className={`w-[100px] p-1 ${
+            theme === "dark"
+              ? "shadow-dark-menuShadow bg-dark-primary"
+              : "shadow-light-menuShadow bg-slate-400"
+          } rounded-full overflow-hidden `}
+        >
+          <div
+            className={`w-full cursor-pointer transition-all duration-300`}
             onClick={onToggleTheme}
-          />
-        ) : (
-          <BsFillMoonFill
-            className={`text-2xl cursor-pointer`}
-            onClick={onToggleTheme}
-          />
-        )}
+          >
+            <RenderIcon />
+          </div>
+        </div>
       </div>
 
       <form
@@ -165,8 +184,7 @@ const Signin = () => {
           theme === "dark"
             ? "text-dark-primary bg-dark-secondary shadow-dark-menuShadow"
             : "text-dark-secondary bg-slate-400 shadow-light-menuShadow"
-          }`
-        }
+        }`}
       >
         <h1 className={`text-2xl font-bold`}>Signin</h1>
 
