@@ -66,12 +66,13 @@ const UploadFile = ({
             />
           </div>
           <button
-            className={`py-2 px-4 ${
+            className={`py-2 px-4 ${!selectedFile ? 'cursor-not-allowed' : ''} ${
               theme === "dark"
                 ? "text-dark-secondary bg-dark-primary-btn hover:bg-dark-secondary-btn"
                 : "text-dark-primary bg-dark-primary hover:opacity-[0.85]"
             } rounded-md transition-all duration-300 self-center`}
             onClick={onAddFile}
+            disabled={!selectedFile}
           >
             Upload
           </button>

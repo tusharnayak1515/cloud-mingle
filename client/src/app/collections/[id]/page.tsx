@@ -453,9 +453,7 @@ const CollectionDetailsPage = () => {
         {collection?.files?.length === 0 ? (
           <p className={`text-center text-lg`}>No files uploaded</p>
         ) : (
-          <div
-            className={`w-[60% flex flex-col justify-start items-center gap-4`}
-          >
+          <div className={`flex flex-col justify-start items-center gap-4`}>
             <div className="w-full my-4 overflow-x-scroll md_link:overflow-x-clip sm:max-w-full">
               <table
                 className={`h-full w-[600px] sm:w-full overflow-x-clip bg-transparent`}
