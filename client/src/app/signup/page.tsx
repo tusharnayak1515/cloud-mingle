@@ -1,11 +1,15 @@
 "use client";
 
 import { sendOtp, userSignup } from "@/apiCalls/auth";
+import LoadingSpinner from "@/components/LoadingSpinner";
+import { setTheme } from "@/redux/reducers/userReducer";
+import { setCookie } from "cookies-next";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { BiLogoGoogle } from "react-icons/bi";
-import { shallowEqual, useSelector } from "react-redux";
+import { BsFillMoonFill, BsFillSunFill } from "react-icons/bs";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 
 const emailRegex = /^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[A-Za-z]+$/;
@@ -13,7 +17,11 @@ const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])/;
 
 const Signup = () => {
   const router = useRouter();
-  const { user } = useSelector((state: any) => state.userReducer, shallowEqual);
+  const dispatch: any = useDispatch();
+  const { user, theme } = useSelector(
+    (state: any) => state.userReducer,
+    shallowEqual
+  );
 
   const initUserDetails = {
     name: "",
@@ -31,7 +39,8 @@ const Signup = () => {
     setUserDetails({ ...userDetails, [name]: value });
   };
 
-  const onOtpSend = async () => {
+  const onOtpSend = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     try {
       if (!emailRegex.test(userDetails.email)) {
         toast.error("Invalid email", {
@@ -107,6 +116,7 @@ const Signup = () => {
           });
         }
       } else if (name.replace("/s/g", "").trim().length === 0) {
+        setIsLoading(false);
         toast.error("Name cannot be empty", {
           position: "top-right",
           autoClose: 3000,
@@ -117,6 +127,7 @@ const Signup = () => {
           progress: undefined,
         });
       } else if (!emailRegex.test(email)) {
+        setIsLoading(false);
         toast.error("Invalid email", {
           position: "top-right",
           autoClose: 3000,
@@ -127,6 +138,7 @@ const Signup = () => {
           progress: undefined,
         });
       } else if (!passwordRegex.test(password)) {
+        setIsLoading(false);
         toast.error("Enter a strong password", {
           position: "top-right",
           autoClose: 3000,
@@ -137,6 +149,7 @@ const Signup = () => {
           progress: undefined,
         });
       } else {
+        setIsLoading(false);
         toast.error("Invalid OTP", {
           position: "top-right",
           autoClose: 3000,
@@ -168,6 +181,16 @@ const Signup = () => {
     );
   };
 
+  const onToggleTheme = () => {
+    if (theme === "dark") {
+      setCookie("theme", "light");
+      dispatch(setTheme({ theme: "light" }));
+    } else {
+      setCookie("theme", "dark");
+      dispatch(setTheme({ theme: "dark" }));
+    }
+  };
+
   useEffect(() => {
     if (user) {
       router.replace("/");
@@ -176,12 +199,38 @@ const Signup = () => {
 
   return (
     <div
-      className={`min-h-[100vh] w-full flex flex-col justify-start items-center bg-dark-primary`}
+      className={`min-h-[100vh] w-full flex flex-col justify-start items-center ${
+        theme === "dark" ? "bg-dark-primary" : "bg-slate-200"
+      }`}
     >
+      {isLoading && <LoadingSpinner />}
+
+      <div
+        className={`absolute top-[20px] right-[100px] ${
+          theme === "dark" ? "text-dark-primary" : "text-dark-secondary"
+        }`}
+      >
+        {theme === "dark" ? (
+          <BsFillSunFill
+            className={`text-2xl cursor-pointer`}
+            onClick={onToggleTheme}
+          />
+        ) : (
+          <BsFillMoonFill
+            className={`text-2xl cursor-pointer`}
+            onClick={onToggleTheme}
+          />
+        )}
+      </div>
+
       <form
-        className={`h-auto w-[90%] xxxs:w-[400px] my-[6rem] p-4 text-dark-primary
-      flex flex-col justify-start items-center gap-4 shadow-dark-menuShadow
-      rounded-md bg-dark-secondary`}
+        className={`h-auto w-[90%] xxxs:w-[400px] my-[7rem] p-4
+        flex flex-col justify-start items-center gap-4
+        rounded-md ${
+          theme === "dark"
+            ? "text-dark-primary bg-dark-secondary shadow-dark-menuShadow"
+            : "text-dark-secondary bg-slate-400 shadow-light-menuShadow"
+        }`}
         onSubmit={otpSent ? onRegister : onOtpSend}
       >
         <h1 className={`text-2xl font-bold`}>Signup</h1>
@@ -199,8 +248,13 @@ const Signup = () => {
             onChange={onChangeHandler}
             readOnly={otpSent}
             className={`w-full py-2 px-4 rounded-md 
-            border border-transparent focus:border-dark-primary
-            bg-dark-primary outline-none`}
+            border border-transparent
+            ${
+              theme === "dark"
+                ? "focus:border-dark-primary bg-dark-primary"
+                : "focus:border-dark-secondary bg-slate-500"
+            }
+           outline-none`}
           />
         </div>
 
@@ -217,8 +271,13 @@ const Signup = () => {
             onChange={onChangeHandler}
             readOnly={otpSent}
             className={`w-full py-2 px-4 rounded-md 
-            border border-transparent focus:border-dark-primary
-            bg-dark-primary outline-none`}
+            border border-transparent
+            ${
+              theme === "dark"
+                ? "focus:border-dark-primary bg-dark-primary"
+                : "focus:border-dark-secondary bg-slate-500"
+            }
+           outline-none`}
           />
         </div>
 
@@ -235,8 +294,13 @@ const Signup = () => {
             onChange={onChangeHandler}
             readOnly={otpSent}
             className={`w-full py-2 px-4 rounded-md 
-            border border-transparent focus:border-dark-primary
-            bg-dark-primary outline-none`}
+            border border-transparent
+            ${
+              theme === "dark"
+                ? "focus:border-dark-primary bg-dark-primary"
+                : "focus:border-dark-secondary bg-slate-500"
+            }
+           outline-none`}
           />
         </div>
 
@@ -251,8 +315,15 @@ const Signup = () => {
               id="otp"
               placeholder="1234"
               className={`w-full py-2 px-4 rounded-md 
-            border border-transparent focus:border-dark-primary
-            bg-dark-primary outline-none`}
+            border border-transparent
+            ${
+              theme === "dark"
+                ? "focus:border-dark-primary bg-dark-primary"
+                : "focus:border-dark-secondary bg-slate-500"
+            }
+           outline-none`}
+              value={userDetails.otp}
+              onChange={onChangeHandler}
             />
           </div>
         )}
@@ -260,24 +331,46 @@ const Signup = () => {
         <button
           type="submit"
           className={`w-full py-2 px-4 
-            border border-dark-primary rounded-md hover:bg-dark-hover
-        bg-dark-primary transition-all duration-300`}
+          border rounded-md
+          ${
+            theme === "dark"
+              ? "text-dark-primary border-dark-primary hover:bg-dark-hover bg-dark-primary"
+              : "text-dark-secondary border-dark-secondary hover:bg-slate-500 bg-slate-400"
+          } transition-all duration-300`}
         >
           Signup
         </button>
 
         <div className={`w-full flex justify-between items-center gap-2`}>
-          <div className={`w-full border border-dark-primary`}></div>
-          <p className={`text-slate-400`}>OR</p>
-          <div className={`w-full border border-dark-primary`}></div>
+          <div
+            className={`w-full border ${
+              theme === "dark" ? "border-dark-primary" : "border-dark-secondary"
+            }`}
+          ></div>
+          <p
+            className={`${
+              theme === "dark" ? "text-slate-400" : "text-dark-secondary"
+            }`}
+          >
+            OR
+          </p>
+          <div
+            className={`w-full border ${
+              theme === "dark" ? "border-dark-primary" : "border-dark-secondary"
+            }`}
+          ></div>
         </div>
 
         <button
           type="button"
-          className={`w-full py-2 px-4 text-dark-primary 
+          className={`w-full py-2 px-4 
               flex justify-center items-center gap-[0.3rem] 
-              border border-dark-primary rounded-md
-            hover:bg-dark-primary bg-dark-secondary transition-all duration-300`}
+              border rounded-md
+            ${
+              theme === "dark"
+                ? "text-dark-primary border-dark-primary bg-dark-secondary hover:bg-dark-primary "
+                : "text-dark-secondary border-dark-secondary bg-slate-400 hover:bg-slate-500 "
+            } transition-all duration-300`}
           onClick={googleAuth}
         >
           <BiLogoGoogle className={`text-2xl`} />

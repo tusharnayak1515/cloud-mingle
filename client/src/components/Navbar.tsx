@@ -40,6 +40,24 @@ const Navbar = ({ setShowSidebar }: any) => {
     }
   };
 
+  const RenderIcon = () => {
+    return (
+      <div
+        className={`flex items-center ${
+          theme === "dark"
+            ? "justify-end] bg-dark-secondary"
+            : "justify-start]"
+        } rounded-full`}
+      >
+        {theme === "dark" ? (
+          <BsFillMoonFill className={`w-[20px] translate-x-[60px] text-2xl transition-all duration-300`} />
+        ) : (
+          <BsFillSunFill className={`w-[20px] translate-x-0 text-2xl transition-all duration-300`} />
+        )}
+      </div>
+    );
+  };
+
   return (
     <div
       className={`w-full p-4 ${
@@ -57,17 +75,24 @@ const Navbar = ({ setShowSidebar }: any) => {
       />
 
       <div className={`flex justify-start items-center gap-3`}>
-        {theme === "light" ? (
-          <BsFillSunFill
-            className={`text-2xl cursor-pointer`}
+        <div
+          className={`w-[90px] ${
+            theme === "dark" ? "bg-dark-primary" : "bg-slate-400"
+          } rounded-full overflow-hidden`}
+        >
+          <div
+            className={`w-[80px] m-1 bg-red-500] cursor-pointer transition-all duration-500`}
             onClick={onToggleTheme}
-          />
-        ) : (
-          <BsFillMoonFill
-            className={`text-2xl cursor-pointer`}
-            onClick={onToggleTheme}
-          />
-        )}
+          >
+            {/* {theme === "light" ? (
+              <BsFillSunFill className={`text-2xl translate-x-[60px]`} />
+            ) : (
+              <BsFillMoonFill className={`text-2xl translate-x-0`} />
+            )} */}
+            <RenderIcon />
+          </div>
+        </div>
+
         <RiShutDownLine
           className={`text-2xl cursor-pointer`}
           onClick={onLogout}

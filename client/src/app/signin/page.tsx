@@ -8,9 +8,10 @@ import { useDispatch, useSelector, shallowEqual } from "react-redux";
 import { toast } from "react-toastify";
 import { userSignin } from "@/apiCalls/auth";
 import { setCookie } from "cookies-next";
-import { setProfile, setUser } from "@/redux/reducers/userReducer";
+import { setProfile, setTheme, setUser } from "@/redux/reducers/userReducer";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { BiLogoGoogle } from "react-icons/bi";
+import { BsFillMoonFill, BsFillSunFill } from "react-icons/bs";
 const ResetPasswordModal = dynamic(
   () => import("@/components/modals/ResetPasswordModal"),
   { ssr: false }
@@ -21,7 +22,10 @@ const emailRegex = /^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[A-Za-z]+$/;
 const Signin = () => {
   const router = useRouter();
   const dispatch: any = useDispatch();
-  const { user } = useSelector((state: any) => state.userReducer, shallowEqual);
+  const { user, theme } = useSelector(
+    (state: any) => state.userReducer,
+    shallowEqual
+  );
 
   const initState = {
     email: "",
@@ -107,6 +111,16 @@ const Signin = () => {
     );
   };
 
+  const onToggleTheme = () => {
+    if (theme === "dark") {
+      setCookie("theme", "light");
+      dispatch(setTheme({ theme: "light" }));
+    } else {
+      setCookie("theme", "dark");
+      dispatch(setTheme({ theme: "dark" }));
+    }
+  };
+
   useEffect(() => {
     if (user) {
       router.replace("/");
@@ -115,7 +129,9 @@ const Signin = () => {
 
   return (
     <div
-      className={`min-h-[100vh] w-full flex flex-col justify-start items-center bg-dark-primary`}
+      className={`min-h-[100vh] w-full flex flex-col justify-start items-center ${
+        theme === "dark" ? "bg-dark-primary" : "bg-slate-200"
+      }`}
     >
       {isLoading && <LoadingSpinner />}
 
@@ -123,11 +139,34 @@ const Signin = () => {
         <ResetPasswordModal setIsResetPassword={setIsResetPassword} />
       )}
 
+      <div
+        className={`absolute top-[20px] right-[100px] ${
+          theme === "dark" ? "text-dark-primary" : "text-dark-secondary"
+        }`}
+      >
+        {theme === "dark" ? (
+          <BsFillSunFill
+            className={`text-2xl cursor-pointer`}
+            onClick={onToggleTheme}
+          />
+        ) : (
+          <BsFillMoonFill
+            className={`text-2xl cursor-pointer`}
+            onClick={onToggleTheme}
+          />
+        )}
+      </div>
+
       <form
         onSubmit={onSignin}
-        className={`h-auto w-[90%] xxxs:w-[400px] my-[7rem] p-4 text-dark-primary
-      flex flex-col justify-start items-center gap-4 shadow-dark-menuShadow
-      rounded-md bg-dark-secondary`}
+        className={`h-auto w-[90%] xxxs:w-[400px] my-[7rem] p-4
+        flex flex-col justify-start items-center gap-4
+        rounded-md ${
+          theme === "dark"
+            ? "text-dark-primary bg-dark-secondary shadow-dark-menuShadow"
+            : "text-dark-secondary bg-slate-400 shadow-light-menuShadow"
+          }`
+        }
       >
         <h1 className={`text-2xl font-bold`}>Signin</h1>
 
@@ -141,8 +180,13 @@ const Signin = () => {
             id="email"
             placeholder="example@gmail.com"
             className={`w-full py-2 px-4 rounded-md 
-            border border-transparent focus:border-dark-primary
-            bg-dark-primary outline-none`}
+            border border-transparent
+            ${
+              theme === "dark"
+                ? "focus:border-dark-primary bg-dark-primary"
+                : "focus:border-dark-secondary bg-slate-500"
+            }
+           outline-none`}
             value={userDetails.email}
             onChange={onChangeHandler}
           />
@@ -158,8 +202,13 @@ const Signin = () => {
             id="password"
             placeholder="********"
             className={`w-full py-2 px-4 rounded-md 
-            border border-transparent focus:border-dark-primary
-            bg-dark-primary outline-none`}
+            border border-transparent
+            ${
+              theme === "dark"
+                ? "focus:border-dark-primary bg-dark-primary"
+                : "focus:border-dark-secondary bg-slate-500"
+            }
+           outline-none`}
             value={userDetails.password}
             onChange={onChangeHandler}
           />
@@ -167,7 +216,7 @@ const Signin = () => {
 
         <div className={`w-full flex justify-end items-center`}>
           <p
-            className={`text-sm text-dark-primary font-semibold cursor-pointer hover:underline`}
+            className={`text-sm font-semibold cursor-pointer hover:underline`}
             onClick={() => setIsResetPassword(true)}
           >
             Forgot password?
@@ -177,24 +226,46 @@ const Signin = () => {
         <button
           type="submit"
           className={`w-full py-2 px-4 
-            border border-dark-primary rounded-md hover:bg-dark-hover
-        bg-dark-primary transition-all duration-300`}
+          border rounded-md
+          ${
+            theme === "dark"
+              ? "text-dark-primary border-dark-primary hover:bg-dark-hover bg-dark-primary"
+              : "text-dark-secondary border-dark-secondary hover:bg-slate-500 bg-slate-400"
+          } transition-all duration-300`}
         >
           Signin
         </button>
 
         <div className={`w-full flex justify-between items-center gap-2`}>
-          <div className={`w-full border border-dark-primary`}></div>
-          <p className={`text-slate-400`}>OR</p>
-          <div className={`w-full border border-dark-primary`}></div>
+          <div
+            className={`w-full border ${
+              theme === "dark" ? "border-dark-primary" : "border-dark-secondary"
+            }`}
+          ></div>
+          <p
+            className={`${
+              theme === "dark" ? "text-slate-400" : "text-dark-secondary"
+            }`}
+          >
+            OR
+          </p>
+          <div
+            className={`w-full border ${
+              theme === "dark" ? "border-dark-primary" : "border-dark-secondary"
+            }`}
+          ></div>
         </div>
 
         <button
           type="button"
-          className={`w-full py-2 px-4 text-dark-primary 
+          className={`w-full py-2 px-4 
               flex justify-center items-center gap-[0.3rem] 
-              border border-dark-primary rounded-md
-            hover:bg-dark-primary bg-dark-secondary transition-all duration-300`}
+              border rounded-md
+            ${
+              theme === "dark"
+                ? "text-dark-primary border-dark-primary bg-dark-secondary hover:bg-dark-primary "
+                : "text-dark-secondary border-dark-secondary bg-slate-400 hover:bg-slate-500 "
+            } transition-all duration-300`}
           onClick={googleAuth}
         >
           <BiLogoGoogle className={`text-2xl`} />

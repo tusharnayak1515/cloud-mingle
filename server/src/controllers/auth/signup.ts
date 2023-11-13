@@ -6,7 +6,7 @@ import Token from "../../models/Token";
 import User from "../../models/User";
 
 const signup = async (req: Request, res: Response) => {
-    let success:boolean = false;
+    let success: boolean = false;
     try {
         const { name, email, password, otp } = req.body;
 
@@ -15,7 +15,7 @@ const signup = async (req: Request, res: Response) => {
             return res.status(422).json({ success, error: errors.array()[0].msg });
         }
 
-        let token: IToken | null = await Token.findOne({ email }).exec();
+        let token: IToken | null = await Token.findOne({ email });
         if (!token) {
             return res.status(404).json({ success, error: "Invalid Token." });
         }

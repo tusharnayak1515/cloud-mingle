@@ -169,7 +169,11 @@ const Home = () => {
             <button
               onClick={() => setIsCreateCollection(true)}
               className={`w-full py-3 px-2 flex justify-start items-center gap-4 rounded-md
-            hover:shadow-dark-menuShadow cursor-pointer bg-dark-primary`}
+             cursor-pointer ${
+               theme === "dark"
+                 ? "bg-dark-primary hover:shadow-dark-menuShadow"
+                 : "bg-slate-400 hover:shadow-light-menuShadow"
+             }`}
             >
               <MdOutlineDriveFileRenameOutline className={`text-xl`} />
               <p>New</p>
@@ -212,7 +216,11 @@ const Home = () => {
                     return (
                       <tr
                         key={collection?._id}
-                        className={`border-t ${theme === "dark" ? 'border-dark-primary' : 'border-dark-secondary'} transition-all duration-300`}
+                        className={`border-t ${
+                          theme === "dark"
+                            ? "border-dark-primary"
+                            : "border-dark-secondary"
+                        } transition-all duration-300`}
                       >
                         <td
                           className={`w-auto py-3 px-2 text-sm text-start font-[500]`}
