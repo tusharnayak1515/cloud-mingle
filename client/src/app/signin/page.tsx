@@ -124,15 +124,23 @@ const Signin = () => {
   const RenderIcon = () => {
     return (
       <div
-        className={`w-full p-1 flex items-center ${
+        className={`w-full flex items-center ${
           theme === "dark" ? "bg-slate-800" : "bg-slate-300"
         } rounded-full`}
       >
-        {theme === "dark" ? (
-          <BsFillMoonFill className={`w-[20px] translate-x-[60px] text-2xl`} />
-        ) : (
-          <BsFillSunFill className={`w-[20px] translate-x-0 text-2xl`} />
-        )}
+        <div
+          className={`w-[30px] md:w-[35px] p-1 flex justify-center items-center rounded-full ${
+            theme === "dark"
+              ? "border border-slate-800 bg-slate-600 translate-x-[60px]"
+              : "border border-slate-400 bg-slate-200 translate-x-0"
+          }`}
+        >
+          {theme === "dark" ? (
+            <BsFillMoonFill className={`text-xl md:text-2xl`} />
+          ) : (
+            <BsFillSunFill className={`text-xl md:text-2xl`} />
+          )}
+        </div>
       </div>
     );
   };
@@ -168,7 +176,7 @@ const Signin = () => {
           } rounded-full overflow-hidden `}
         >
           <div
-            className={`w-full cursor-pointer transition-all duration-300`}
+            className={`w-full cursor-pointer`}
             onClick={onToggleTheme}
           >
             <RenderIcon />
