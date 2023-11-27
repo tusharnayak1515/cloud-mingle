@@ -184,7 +184,7 @@ const Home = () => {
             {showFolderMenu && (
               <FolderOptions setIsCreateCollection={setIsCreateCollection} />
             )}
-            <div className="w-full my-4 overflow-x-scroll md_link:overflow-x-clip sm:max-w-full">
+            <div className="min-h-[300px] w-full my-4 overflow-x-scroll md_link:overflow-x-clip sm:max-w-full bg-red-500]">
               <table
                 className={`h-full w-[500px] xs:w-full overflow-x-clip bg-transparent`}
               >

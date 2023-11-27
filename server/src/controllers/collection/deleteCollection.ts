@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { ICollection } from "../../entities/entityInterfaces";
 import Collection from "../../models/Collection";
+import Invite from "../../models/Invite";
 
 const deleteCollection = async (req: Request, res: Response) => {
     let success: boolean = false;
@@ -18,7 +19,8 @@ const deleteCollection = async (req: Request, res: Response) => {
             return res.status(401).json({ success, error: "You are not allowed to do this" });
         }
 
-        await Collection.findByIdAndDelete(collectionId, { new: true });
+        await Collection.findByIdAndDelete(collectionId);
+        await Invite.deleteMany({ targetCollection: collectionId });
 
         const collections: ICollection[] = await Collection.find({
             $or: [{ owner: userId }, { "members.member": userId }],

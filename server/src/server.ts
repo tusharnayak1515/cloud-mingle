@@ -93,8 +93,8 @@ function getUserDetails(socketId: any) {
 io.on("connection", (socket: any) => {
     console.log("Connected to socket.io");
     socket.on("setup", ({ userId, collectionId }: any) => {
-        console.log("userId: ", userId);
-        console.log("collectionId: ", collectionId);
+        // console.log("userId: ", userId);
+        // console.log("collectionId: ", collectionId);
         if (userId) {
             socket.join(userId);
         }
@@ -104,8 +104,8 @@ io.on("connection", (socket: any) => {
     });
 
     socket.on("collection-updated", async ({ userId, collectionId }: any) => {
-        console.log("userId: ", userId);
-        console.log("collectionId: ", collectionId);
+        // console.log("userId: ", userId);
+        // console.log("collectionId: ", collectionId);
         const user: IUser | null = await User.findById(userId);
         const collection: ICollection | null = await Collection.findById(collectionId);
         if (collection) {
@@ -118,8 +118,8 @@ io.on("connection", (socket: any) => {
     });
 
     socket.on("invite-sent", async ({ userId, collectionId }: any) => {
-        console.log("userId: ", userId);
-        console.log("collectionId: ", collectionId);
+        // console.log("userId: ", userId);
+        // console.log("collectionId: ", collectionId);
         const user: IUser | null = await User.findById(userId);
         const collection: ICollection | null = await Collection.findById(collectionId);
         if (user && collection) {

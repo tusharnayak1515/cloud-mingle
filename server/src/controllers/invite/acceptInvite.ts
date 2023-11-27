@@ -79,7 +79,7 @@ const acceptInvite = async (req: Request, res: Response) => {
         }
 
         const invites: IInvite[] = await Invite.find({ user: userId })
-            .populate({ path: "targetCollection" })
+            .populate({ path: "targetCollection", populate: { path: "owner", select: "-password" } })
             .populate({ path: "user", select: "-password" });
 
         success = true;

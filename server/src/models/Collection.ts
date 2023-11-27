@@ -43,8 +43,9 @@ const CollectionSchema = new Schema<ICollectionDocument, ICollectionModel>({
     updatedAt: Number,
 }, { timestamps: true, versionKey: false });
 
-CollectionSchema.pre("deleteOne", { document: true, query: false }, async function (next) {
-    const collectionId = this.getFilter()._id;
+CollectionSchema.pre('findOneAndDelete', { document: true, query: false }, async function (this: ICollectionDocument, next) {
+    const collectionId = this._id;
+    console.log("pre function running");
     try {
         await Invite.deleteMany({ targetCollection: collectionId });
         await Starred.updateMany({ $pull: { collections: collectionId } });

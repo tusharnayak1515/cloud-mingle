@@ -177,6 +177,7 @@ const ShareCollectionModal = ({ show, setShow }: any) => {
                           setMembers={setMembers}
                           membersObj={membersObj}
                           setMembersObj={setMembersObj}
+                          theme={theme}
                         />
                       );
                     })

@@ -38,7 +38,7 @@ const SidebarModal = ({ showSidebar, setShowSidebar }: any) => {
           >
             <IoClose
               className={`absolute top-[10px] left-[260px] text-4xl ${
-                theme === "dark" ? "text-dark-primary" : "text-dark-secondary"
+                theme === "dark" ? "text-dark-primary" : "text-slate-300"
               } cursor-pointer`}
               onClick={() => setShowSidebar(false)}
             />
@@ -61,7 +61,7 @@ const SidebarModal = ({ showSidebar, setShowSidebar }: any) => {
                 href={`/`}
                 className={`w-full p-3 
           flex justify-start items-center gap-2 rounded-md 
-          cursor-pointer hover:bg-dark-hover bg-transparent`}
+          cursor-pointer ${theme === "dark" ? 'hover:bg-dark-hover' : 'hover:bg-dark-primary-btn'} bg-transparent`}
                 onClick={() => setShowSidebar(false)}
               >
                 <MdGridView className={`text-xl`} />
@@ -72,7 +72,7 @@ const SidebarModal = ({ showSidebar, setShowSidebar }: any) => {
                 href={`/starred`}
                 className={`w-full p-3 
           flex justify-start items-center gap-2 rounded-md 
-          cursor-pointer hover:bg-dark-hover bg-transparent`}
+          cursor-pointer ${theme === "dark" ? 'hover:bg-dark-hover' : 'hover:bg-dark-primary-btn'} bg-transparent`}
                 onClick={() => setShowSidebar(false)}
               >
                 <AiOutlineStar className={`text-xl`} />
@@ -83,7 +83,7 @@ const SidebarModal = ({ showSidebar, setShowSidebar }: any) => {
                 href={`/shared`}
                 className={`w-full p-3 
           flex justify-start items-center gap-2 rounded-md 
-          cursor-pointer hover:bg-dark-hover bg-transparent`}
+          cursor-pointer ${theme === "dark" ? 'hover:bg-dark-hover' : 'hover:bg-dark-primary-btn'} bg-transparent`}
                 onClick={() => setShowSidebar(false)}
               >
                 <RiUserShared2Line className={`text-xl`} />
@@ -94,7 +94,7 @@ const SidebarModal = ({ showSidebar, setShowSidebar }: any) => {
                 href={`/invites`}
                 className={`w-full p-3 
           flex justify-start items-center gap-2 rounded-md 
-          cursor-pointer hover:bg-dark-hover bg-transparent`}
+          cursor-pointer ${theme === "dark" ? 'hover:bg-dark-hover' : 'hover:bg-dark-primary-btn'} bg-transparent`}
                 onClick={() => setShowSidebar(false)}
               >
                 <MdNotifications className={`text-xl`} />

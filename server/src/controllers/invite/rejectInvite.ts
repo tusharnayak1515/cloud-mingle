@@ -37,7 +37,7 @@ const rejectInvite = async (req: Request, res: Response) => {
         // collection = await Collection.findByIdAndUpdate(collection?._id?.toString(), { $pull: { members: data } }, { new: true });
 
         const invites: IInvite[] = await Invite.find({ user: userId })
-            .populate({ path: "targetCollection" })
+            .populate({ path: "targetCollection", populate: { path: "owner", select: "-password" } })
             .populate({ path: "user", select: "-password" });
 
         success = true;
